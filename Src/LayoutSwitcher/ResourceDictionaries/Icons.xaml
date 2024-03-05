@@ -1,0 +1,8 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <PathGeometry x:Key="ArrowLeft" Figures="M87.5 161.3375L25 98.8375V90L87.5 27.5L96.3375 36.3375L44.5125 88.175H175V100.675H44.5L96.35 152.5L87.5 161.3375z"/>
+    <PathGeometry x:Key="ArrowRight" Figures="M112.5 26.4125L175 88.9125V97.75L112.5 160.25L103.6625 151.4125L155.4875 99.575H25V87.075H155.5L103.65 35.25L112.4875 26.4125z"/>
+    <PathGeometry x:Key="ArrowDown" Figures="M173.175 112.5L110.675 175H101.8375L39.3375 112.5L48.175 103.6625L100 155.4875V25H112.5V155.5L164.325 103.6625L173.175 112.5z"/>
+    <PathGeometry x:Key="ArrowUp" Figures="M39.3375 87.5L101.8375 25H110.675L173.175 87.5L164.3375 96.3375L112.5 44.5125V175H100V44.5L48.175 96.35L39.3375 87.5z"/>
+
+</ResourceDictionary> 

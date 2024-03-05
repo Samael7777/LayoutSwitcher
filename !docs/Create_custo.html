@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+    <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="UTF-8">
+    <title>Create custom window of IME class -> Форум на Исходниках.RU [Powered by Invision Power Board]</title>
+    </head>
+    <body bgcolor='#FFFFFF' alink='#000000' vlink='#000000' link='#000000'>
+     <table width='90%'>
+      <tr>
+       <td><b><span style='font-family:arial; font-size:x-large; color:#4C77B6'><b>Версия для печати</b></span>
+       	   <br><span style='font-family:arial; font-size:small; color:#000000'><b><a href='https://forum.sources.ru/index.php?act=ST&amp;f=24&amp;t=313699'>Нажмите сюда для просмотра этой темы в оригинальном формате</a></b></span>
+       </td>
+      </tr>
+      <tr>
+       <td><span style='font-family:arial; size:small; color:#000000'><b>Форум на Исходниках.RU &gt; C/C++: Системное программирование и WinAPI &gt; <span style='color:red'>Create custom window of IME class</span></b></span></td>
+      </tr>
+     </table>
+     <br>
+     <br>
+
+	<table width='90%' border='1'>
+	<tr>
+	 <td bgcolor='#EEEEEE'><span style='font-family:arial; size:small; color:#000000'><b>Автор: kero_xmemor</b>  20.09.10, 05:07</b></span></td>
+	</tr>
+	<tr>
+	 <td><span style='font-family:arial; size:medium; color:#000000'> <a class='tag-url' href='http://msdn.microsoft.com/en-us/library/dd318170(VS.85).aspx' target='_blank'>MSDN — IME Window Class</a>:<br>
+<div class='tag-quote'><span class='tag-quote-prefix'>Цитата</span> <div class='quote '>The IME window class is a predefined system global class that defines the appearance and behavior of the standard IME windows. <br>
+The class is similar to common control classes in that the application creates a window of this class by using the CreateWindowEx function.</div></div><br>
+Но сможете ли вы создать на своем компе окно этого класса через CreateWindowEx попросту, без ухищрений ?<br>
+Например, у меня — что на XP, что на Win7, что при установленном IME, что при убранном, — окно успешно создается, но тут же дохнет, ибо на WM_CREATE возвращается -1.<br>
+И приходится CBT-хуком, хотя очень даже допускаю, что проглядел какую-то тонкость IME...<br>
+<br>
+<em class='tag-i'>Так знает ли тут кто, как создавать жизнеспособное окно класса IME без CBT хука ?</em> </span></td>
+	</tr>
+	</table>
+	<br>
+
+	<table width='90%' border='1'>
+	<tr>
+	 <td bgcolor='#EEEEEE'><span style='font-family:arial; size:small; color:#000000'><b>Автор: B.V.</b>  20.09.10, 09:21</b></span></td>
+	</tr>
+	<tr>
+	 <td><span style='font-family:arial; size:medium; color:#000000'> <div class='tag-quote'><a class='tag-quote-link' href='https://forum.sources.ru/index.php?showtopic=313699&view=findpost&p=2701293'><span class='tag-quote-prefix'>Цитата</span></a> <span class='tag-quote__quote-info'>kero_xmemor &#064; <time class="tag-quote__quoted-time" datetime="2010-09-20T05:07:54+00:00">20.09.10, 05:07</time></span><div class='quote '>(С хуком: http://files.rsdn.ru/42164/ime_wnd_cbt.zip) .</div></div><br>
+kero, у нас раздел по C/C++. Я понимаю, что WinAPI, он и в Африке WinAPI, но давай придерживаться языка раздела, коль уж здесь задал вопрос? </span></td>
+	</tr>
+	</table>
+	<br>
+
+	<table width='90%' border='1'>
+	<tr>
+	 <td bgcolor='#EEEEEE'><span style='font-family:arial; size:small; color:#000000'><b>Автор: kero_xmemor</b>  20.09.10, 09:42</b></span></td>
+	</tr>
+	<tr>
+	 <td><span style='font-family:arial; size:medium; color:#000000'> B.V., так лучше? <img src='https://forum.sources.ru/smiles/Main/smile.gif' alt=':)'><br>А по самому вопросу мысли есть? </span></td>
+	</tr>
+	</table>
+	<br>
+
+	<table width='90%' border='1'>
+	<tr>
+	 <td bgcolor='#EEEEEE'><span style='font-family:arial; size:small; color:#000000'><b>Автор: B.V.</b>  20.09.10, 09:59</b></span></td>
+	</tr>
+	<tr>
+	 <td><span style='font-family:arial; size:medium; color:#000000'> <div class='tag-quote'><a class='tag-quote-link' href='https://forum.sources.ru/index.php?showtopic=313699&view=findpost&p=2701462'><span class='tag-quote-prefix'>Цитата</span></a> <span class='tag-quote__quote-info'>kero_xmemor &#064; <time class="tag-quote__quoted-time" datetime="2010-09-20T09:42:06+00:00">20.09.10, 09:42</time></span><div class='quote '>А по самому вопросу мысли есть?</div></div><br>
+Немного поигравшись со стилями окна, удалось добиться его создания при следующем вызове:<br>
+<div class='tag-code'><span class='pre_code'><span onclick='return syntax_collapse(this,1);' title='Свернуть/развернуть'><span id='code_collapse_on_1' style='display:none'><{CODE_COLLAPSE_ON}></span><span id='code_collapse_off_1' ><{CODE_COLLAPSE_OFF}></span></span><span onclick='return syntax_wrap(this,1);' title='Включить/выключить перенос строк'><span id='code_wrap_on_1' style='display:none'><{CODE_WRAP_ON}></span><span id='code_wrap_off_1' ><{CODE_WRAP_OFF}></span></span></span><div class='code  code_collapsed ' title='Подсветка синтаксиса доступна зарегистрированным участникам Форума.' style=''><div><div><ol type="1"><div class="code_line">HWND hIME = CreateWindowEx(0, L&quot;IME&quot;, NULL, WS_DISABLED | WS_POPUP, 0, 0,</div><div class="code_line">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;0, 0, NULL, NULL, hInstance, NULL);</div></ol></div></div></div></div><script>preloadCodeButtons('1');</script><br>
+Но с чем связана зависимость от этих стилей -- не имею ни малейшего представления. Поиск в MSDN выдал еще несколько аналогичных <a class='tag-url' href='http://msdn.microsoft.com/en-us/goglobal/bb688173.aspx' target='_blank'>сносок</a>, без каких-либо подробностей в отношении создания IME<br>
+Думаю, имеет смысл поискать статьи по &quot;IME-aware application&quot; </span></td>
+	</tr>
+	</table>
+	<br>
+
+	<table width='90%' border='1'>
+	<tr>
+	 <td bgcolor='#EEEEEE'><span style='font-family:arial; size:small; color:#000000'><b>Автор: kero_xmemor</b>  20.09.10, 10:43</b></span></td>
+	</tr>
+	<tr>
+	 <td><span style='font-family:arial; size:medium; color:#000000'> <div class='tag-quote'><span class='tag-quote-prefix'>Цитата</span> <div class='quote '>Немного поигравшись со стилями окна, удалось добиться его создания при следующем вызове:</div></div><br>
+Отлично&#33;<br>
+Попробую вникнуть, что к чему.<br>
+(А насчет ссылок и статей, причем именно указанных вами, - так а как же, просматривал предварительно, но что-то ничего не попалось, или прозевал).<br>
+---<br>
+<div class='tag-quote'><span class='tag-quote-prefix'>Цитата</span> <div class='quote '>Немного поигравшись со стилями окна</div></div><br>
+B.V., оценил вашу шутку <img src='https://forum.sources.ru/smiles/Main/smile.gif' alt=':)'> <br>
+И спасибо за урок: непостижимо, почему не обратил внимание на очевидное (в аттаче - фрагмент дерева окон в Enum-order-е, при котором все IME собираются в кучку, под Progman).<br>
+<br>
+Проверил: необходимо и достаточно наличие WS_POPUP|WS_DISABLED, добавление любых других WS_ и WS_EX_ стилей несущественно, как и размер окна, и текст заголовка.<br>
+<br>
+<span class="b-attach" data-size="2107" data-hits="116" data-attach-id="2419" data-attach-post-id="2701550">
+			<span class="b-attach__title"></span><img src='https://forum.sources.ru/html/mime_types/zip.gif' alt=''><a class='b-attach-link' href='https://forum.sources.ru/index.php?act=Attach&amp;type=post&amp;id=2701550&amp;attach_id=2419' title='Скачать файл' target='_blank'>ime_wtsnap.zip</a> (, : 116)
+		</span> </span></td>
+	</tr>
+	</table>
+	<br>
+
+	<table width='90%' border='1'>
+	<tr>
+	 <td bgcolor='#EEEEEE'><span style='font-family:arial; size:small; color:#000000'><b>Автор: kero_xmemor</b>  20.09.10, 13:20</b></span></td>
+	</tr>
+	<tr>
+	 <td><span style='font-family:arial; size:medium; color:#000000'> Хотя как именно WS_POPUP|WS_DISABLED помогает не умереть окну при родах - еще предстоит уточнять, но ответ на исходный, спасибо B.V., получен. </span></td>
+	</tr>
+	</table>
+	<br>
+
+	<table width='90%' border='1'>
+	<tr>
+	 <td bgcolor='#EEEEEE'><span style='font-family:arial; size:small; color:#000000'><b>Автор: B.V.</b>  20.09.10, 13:26</b></span></td>
+	</tr>
+	<tr>
+	 <td><span style='font-family:arial; size:medium; color:#000000'> <div class='tag-quote'><a class='tag-quote-link' href='https://forum.sources.ru/index.php?showtopic=313699&view=findpost&p=2701715'><span class='tag-quote-prefix'>Цитата</span></a> <span class='tag-quote__quote-info'>kero_xmemor &#064; <time class="tag-quote__quoted-time" datetime="2010-09-20T13:20:26+00:00">20.09.10, 13:20</time></span><div class='quote '>Хотя как именно WS_POPUP|WS_DISABLED помогает не умереть окну при родах - еще предстоит уточнять</div></div><br>
+Если вдруг докопаешься до истины, отпишись в этой теме. Мне самому интересно стало <img src='https://forum.sources.ru/smiles/Main/smile.gif' alt=':)'> </span></td>
+	</tr>
+	</table>
+	<br>
+
+	<table width='90%' border='1'>
+	<tr>
+	 <td bgcolor='#EEEEEE'><span style='font-family:arial; size:small; color:#000000'><b>Автор: kero_xmemor</b>  20.09.10, 16:47</b></span></td>
+	</tr>
+	<tr>
+	 <td><span style='font-family:arial; size:medium; color:#000000'> <div class='tag-quote'><span class='tag-quote-prefix'>Цитата</span> <div class='quote '>Если вдруг докопаешься до истины, отпишись в этой теме.</div></div><br>
+Договорились <img src='https://forum.sources.ru/smiles/Main/smile.gif' alt=':)'><br>
+Итак, просто для &quot;закрепления материала&quot; - как создавать IME-окно с нужным стилем:<br>
+<div class='tag-code'><span class='pre_code'><span onclick='return syntax_collapse(this,2);' title='Свернуть/развернуть'><span id='code_collapse_on_2' style='display:none'><{CODE_COLLAPSE_ON}></span><span id='code_collapse_off_2' ><{CODE_COLLAPSE_OFF}></span></span><span onclick='return syntax_wrap(this,2);' title='Включить/выключить перенос строк'><span id='code_wrap_on_2' style='display:none'><{CODE_WRAP_ON}></span><span id='code_wrap_off_2' ><{CODE_WRAP_OFF}></span></span></span><div class='code  code_collapsed ' title='Подсветка синтаксиса доступна зарегистрированным участникам Форума.' style=''><div><div><ol type="1"><div class="code_line">SetWindowLong(CreateWindowEx(...,WS_POPUP|WS_DISABLED,...),GWL_STYLE,WS_OVERLAPPEDWINDOW|WS_VISIBLE)</div></ol></div></div></div></div> </span></td>
+	</tr>
+	</table>
+	<br>
+
+<div class='center'>
+  <span style='font-size:xx-small; color:#000000'>Powered by Invision Power Board (https://www.invisionboard.com)<br>&copy; Invision Power Services (https://www.invisionpower.com)</span>
+</div>

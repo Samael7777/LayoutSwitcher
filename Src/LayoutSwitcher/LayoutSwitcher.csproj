@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\Keyboard.ico</ApplicationIcon>
+    <OutDir Condition="'$(SolutionOutputDir)' != ''">$(SolutionOutputDir)</OutDir>
+  </PropertyGroup>	
+	
+  <ItemGroup>
+    <None Remove="Resources\Keyboard.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Keyboard.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\!!MyLibs\Hooks\HotKeyHook\HotKeyHook.csproj" />
+    <ProjectReference Include="..\..\..\!!MyLibs\Hooks\VirtualKeys\VirtualKeys.csproj" />
+    <ProjectReference Include="..\..\..\!!MyLibs\Watchers\Watchers.csproj" />
+    <ProjectReference Include="..\LayoutControl\LayoutControl.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
