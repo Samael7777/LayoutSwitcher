@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Runtime.InteropServices;
+using System.Windows;
 using System.Windows.Interop;
 
 namespace LayoutSwitcher.MessageWindow;
@@ -6,6 +7,7 @@ namespace LayoutSwitcher.MessageWindow;
 
 public partial class MsgOnlyWindow
 {
+    private const int HWND_MESSAGE = -3;
     private readonly ManualResetEventSlim _initEvent;
 
     private HwndSource? _hWndSource;
@@ -50,7 +52,17 @@ public partial class MsgOnlyWindow
     {
         base.OnSourceInitialized(e);
         _hWndSource = PresentationSource.FromVisual(this) as HwndSource;
-        _hWndSource?.AddHook(WndProc);
+        if (_hWndSource == null) 
+            throw new ApplicationException("Error initializing message window.");
+
+        _hWndSource.AddHook(WndProc);
+        var oldParent = SetParent(_hWndSource.Handle, (IntPtr)HWND_MESSAGE);
+        if (oldParent == IntPtr.Zero)
+        {
+			var error = Marshal.GetLastWin32Error();
+            throw new ApplicationException($"Error initializing message window. Error : 0x{error:x8}");
+        }
+           
         _initEvent.Set();
     }
 
@@ -61,4 +73,7 @@ public partial class MsgOnlyWindow
         handled = message.Handled;
         return IntPtr.Zero;
     }
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 }
