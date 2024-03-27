@@ -26,6 +26,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" MinWidth="260"/>
@@ -52,13 +53,13 @@
         </StackPanel>
 
         <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding Autorun}" Content="Enable autorun" HorizontalAlignment="Left" Margin="5,10,0,5" VerticalAlignment="Top"/>
-
-        <StackPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,5">
+        <CheckBox Grid.Row="3" Grid.Column="0" IsChecked="{Binding UseHookToChangeLayout}" Content="Use hook to change layout" HorizontalAlignment="Left" Margin="5, 10, 0, 5" VerticalAlignment="Top"/>
+        <StackPanel Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,5">
             <TextBlock Text="Current system layout switch hotkey: " HorizontalAlignment="Left" VerticalAlignment="Top" />
             <TextBlock Text="{Binding SystemLayoutSwitchHotkey}"/>
         </StackPanel>
-        
-        <StackPanel Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,5">
+
+        <StackPanel Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,5">
             <TextBlock Text="Current layout switch hotkey: " HorizontalAlignment="Left" VerticalAlignment="Center" />
             <ComboBox x:Name="HotkeySelector" ItemsSource="{Binding AvailableHotkeys}" SelectedIndex="{Binding AppHotkeyIndex}" Width="200" Margin="5,0,0,0">
                 <i:Interaction.Triggers>

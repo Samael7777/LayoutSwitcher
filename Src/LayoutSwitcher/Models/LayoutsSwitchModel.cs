@@ -12,13 +12,12 @@ public partial class LayoutsSwitchModel : ObservableObject
     private readonly Settings _settings;
     private readonly ChangeLayoutHook _changeLayoutHook;
 
-    [ObservableProperty] 
-    private KeyboardLayout _currentLayout;
+    [ObservableProperty] private KeyboardLayout _currentLayout;
     
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(AvailableLayouts))] 
     private KeyboardLayout[] _cyclingLayouts;
-    
+
     public LayoutsSwitchModel(Settings settings, ChangeLayoutHook changeLayoutHook)
     {
         _settings = settings;
@@ -58,13 +57,18 @@ public partial class LayoutsSwitchModel : ObservableObject
         {
             if (CyclingLayouts.Length == 0) return;
 
-            var index = CyclingLayouts.FirstIndexOf(CurrentLayout);
+            //var index = CyclingLayouts.FirstIndexOf(CurrentLayout);
+            var currentLayout = LayoutController.GetForegroundWindowKeyboardLayout();
+			var index = CyclingLayouts.FirstIndexOf(currentLayout);
             var nextIndex = index == -1 || index == CyclingLayouts.Length - 1
                 ? 0
                 : index + 1;
             var target = CyclingLayouts[nextIndex];
 
-            _changeLayoutHook.ChangeLayoutRequest(target);
+			if (_settings.UseHookToChangeLayout)
+				_changeLayoutHook.ChangeLayoutRequest(target);
+			else
+				LayoutController.ChangeLayoutOnForegroundWindow(target);
         }
         finally
         {

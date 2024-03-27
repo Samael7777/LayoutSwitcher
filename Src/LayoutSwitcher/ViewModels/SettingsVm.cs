@@ -48,11 +48,17 @@ public partial class SettingsVm : ObservableObject
         set => _settings.Autorun = value;
     }
 
+    public bool UseHookToChangeLayout
+    {
+	    get => _settings.UseHookToChangeLayout;
+	    set => _settings.UseHookToChangeLayout = value;
+    }
+
     [RelayCommand]
     private void AddToCycling(object indexObj)
     {
         if (indexObj is not int index || index < 0) return;
-
+		
         _layoutsSwitchModel.AddToCycling(index);
     }
 
@@ -88,7 +94,6 @@ public partial class SettingsVm : ObservableObject
         _hotkeysModel.SetAppToggleHotKey(index);
     }
 
-    //todo
     [RelayCommand]
     private Task FormClosing()
     {

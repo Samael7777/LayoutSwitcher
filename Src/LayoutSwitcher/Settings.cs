@@ -7,6 +7,7 @@ using LayoutControl;
 using LayoutSwitcher.JsonConverters;
 using LayoutSwitcher.Models;
 using VirtualKeys;
+// ReSharper disable UnusedParameterInPartialMethod
 
 namespace LayoutSwitcher;
 
@@ -25,11 +26,14 @@ public partial class Settings : ObservableObject
 
     private readonly AppAutorun _appAutorun = new();
 
-    [ObservableProperty] 
+    [ObservableProperty]
     private ImmutableList<KeyboardLayout> _cycledLayouts = ImmutableList<KeyboardLayout>.Empty;
 
     [ObservableProperty] 
     private HotKey _appToggleHotkey = HotKey.Empty;
+
+    [ObservableProperty] 
+    private bool _useHookToChangeLayout;
 
     [JsonIgnore]
     public bool IsChanged { get; private set; }
@@ -58,15 +62,18 @@ public partial class Settings : ObservableObject
         return loaded ?? new Settings();
     }
 
-    // ReSharper disable once UnusedParameterInPartialMethod
     partial void OnCycledLayoutsChanged(ImmutableList<KeyboardLayout> value)
     {
         IsChanged = true;
     }
 
-    // ReSharper disable once UnusedParameterInPartialMethod
     partial void OnAppToggleHotkeyChanged(HotKey value)
     {
         IsChanged = true;
+    }
+
+    partial void OnUseHookToChangeLayoutChanged(bool value)
+    {
+	    IsChanged = true;
     }
 }

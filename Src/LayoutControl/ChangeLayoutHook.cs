@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using LayoutControl.PInvoke;
+﻿using LayoutControl.PInvoke;
 using LayoutControl.Wrapper;
 
 // ReSharper disable InconsistentNaming
@@ -54,14 +53,15 @@ public class ChangeLayoutHook : IDisposable
         _wrapperController = new WrapperController();
         _wrapperController.LayoutChanged += (_, hkl) => InvokeLayoutChanged(hkl);
     }
-    
-    public void ChangeLayoutRequest(KeyboardLayout target)
+
+    public void ChangeLayoutRequest(KeyboardLayout targetLayout)
     {
-        var focusWindow = GetFocusedWnd();
+        var focusWindow = WindowHelper.GetForegroundFocusedWnd();
         var isWow64ProcessWindow = ProcessHelper.IsWow64ProcessWindow(focusWindow);
 
-        var klIdPtr = target.IsImeLayout ? (IntPtr)target.KLID : IntPtr.Zero;
-        var hklPtr = target.IsImeLayout ? IntPtr.Zero : (IntPtr)target.Hkl;
+        var klIdPtr = targetLayout.IsImeLayout ? (IntPtr)targetLayout.KLID : IntPtr.Zero;
+        var hkl = unchecked((int)targetLayout.Hkl);
+        var hklPtr = targetLayout.IsImeLayout ? IntPtr.Zero : (IntPtr)hkl;
 
         if (isWow64ProcessWindow)
         {
@@ -72,7 +72,7 @@ public class ChangeLayoutHook : IDisposable
             User32.SendMessage(focusWindow, _layoutChangeRequestMessageCode, klIdPtr, hklPtr);
         }
     }
-
+	
     private void OnMessageCaptured(object? sender, WindowsMessageArgs e)
     {
         var message = e.Msg;
@@ -139,22 +139,7 @@ public class ChangeLayoutHook : IDisposable
 
         return result;
     }
-
-    private static IntPtr GetFocusedWnd()
-    {
-        var foregroundWnd = User32.GetForegroundWindow();
-        var foregroundThread = User32.GetWindowThreadProcessId(foregroundWnd, out _);
-
-        var info = new Guithreadinfo()
-        {
-            cbSize = Marshal.SizeOf<Guithreadinfo>(),
-        };
-        User32.GetGUIThreadInfo(foregroundThread, ref info);
-
-        var focus = info.hwndCaret != IntPtr.Zero ? info.hwndCaret :info.hwndFocus;
-        return focus;
-    }
-    
+	
     #region Dispose
 
     private bool _disposed;

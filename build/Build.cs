@@ -1,24 +1,15 @@
 using System;
-using System.IO;
-using System.Linq;
-using Microsoft.Build.Tasks;
 using Nuke.Common;
-using Nuke.Common.CI;
 using Nuke.Common.Execution;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
-using Nuke.Common.Tooling;
-using Nuke.Common.Tools.Docker;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.MSBuild;
-using Nuke.Common.Utilities.Collections;
-using static Nuke.Common.EnvironmentInfo;
-using static Nuke.Common.IO.FileSystemTasks;
-using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
-using MSBuild = Microsoft.Build.Tasks.MSBuild;
 // ReSharper disable AllUnderscoreLocalParameterName
+// ReSharper disable InconsistentNaming
+
 
 class Build : NukeBuild
 {
@@ -33,10 +24,10 @@ class Build : NukeBuild
 
     AbsolutePath OutputDirectory => RootDirectory / "Output";
     AbsolutePath PublishDirectory => OutputDirectory / "Publish";
-
+	
     public static int Main ()
     {
-        Logging.Level = Nuke.Common.LogLevel.Error;
+        Logging.Level = LogLevel.Error;
         var result = Execute<Build>(x => x.Compile);
         Console.ReadKey();
         return result;
@@ -80,6 +71,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             DotNetClean();
+			OutputDirectory.DeleteDirectory();
         });
 
     Target Restore => _ => _
@@ -93,9 +85,8 @@ class Build : NukeBuild
         .DependsOn(Restore, BuildCppProjects)
         .Executes(() =>
         {
-            var mainProject = Solution.GetProject("LayoutSwitcher");
             MSBuild(s => s
-                .SetProjectFile(mainProject)
+                .SetProjectFile(Solution.GetProject("LayoutSwitcher"))
                 .SetConfiguration(Configuration)
                 .SetOutDir(OutputDirectory)
             );
@@ -106,4 +97,17 @@ class Build : NukeBuild
                 OutputDirectory.GlobFiles("*.pdb").DeleteFiles();
         });
 
+	//	Target Pack => _ => _
+	//		.DependsOn(Compile)
+	//		.Executes(() => 
+	//		{
+	//			DotNetPack(c => c
+	//			.SetProject(mainProject)
+	//			.SetOutputDirectory(PublishDirectory)
+	//			.SetConfiguration(Configuration)
+	//			.SetNoBuild(InvokedTargets.Contains(Compile))
+	//			.SetPublishSingleFile(true)
+	//			.SetPublishTrimmed(true)
+	//			);
+	//		});
 }
