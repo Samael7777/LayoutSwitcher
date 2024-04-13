@@ -1,4 +1,4 @@
-﻿namespace LayoutControl;
+﻿namespace LayoutControl.ShellHookTools;
 
 public class LayoutChangedEventArgs : EventArgs
 {

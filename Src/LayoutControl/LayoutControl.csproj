@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\!!MyLibs\Hooks\VirtualKeys\VirtualKeys.csproj" />
-    <ProjectReference Include="..\..\..\!!MyLibs\IpcCommunicator\IpcCommunicator.csproj" />
   </ItemGroup>
 
 </Project>

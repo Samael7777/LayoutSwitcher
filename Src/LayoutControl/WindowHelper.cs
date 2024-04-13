@@ -1,10 +1,18 @@
 ﻿using System.Runtime.InteropServices;
 using LayoutControl.PInvoke;
 
+// ReSharper disable InconsistentNaming
+// ReSharper disable IdentifierTypo
+
 namespace LayoutControl;
 
 internal static class WindowHelper
 {
+	
+	private const uint WM_INPUTLANGCHANGEREQUEST = 0x50;
+	private const int KLF_ACTIVATE = 1;
+	private const int GA_ROOTOWNER = 3; //Retrieves the owned root window by walking the chain of parent and owner windows 
+
 	public static IntPtr GetForegroundFocusedWnd()
 	{
 		var foregroundWnd = User32.GetForegroundWindow();
@@ -50,14 +58,22 @@ internal static class WindowHelper
 
 	public static IEnumerator<IntPtr> GetFocusedImeAncestorWindow(IntPtr focusedWindow)
 	{
-		// ReSharper disable once InconsistentNaming
-		// ReSharper disable once IdentifierTypo
-		const int GA_ROOTOWNER = 3; //Retrieves the owned root window by walking the chain of parent and owner windows 
-
 		yield return focusedWindow;
 		var ime = GetDefaultImeWindowForWindow(focusedWindow);
 		yield return ime;
 		var ancestor = User32.GetAncestor(focusedWindow, GA_ROOTOWNER);
 		yield return ancestor;
+	}
+
+	public static void PostChangeLayoutRequest(IntPtr window, KeyboardLayout layout)
+	{
+		var hkl = layout.IsImeLayout 
+			? User32.LoadKeyboardLayout($"{layout.KLID:x8}", KLF_ACTIVATE)
+			: unchecked((IntPtr)(int)layout.Hkl);
+
+		if (hkl == IntPtr.Zero)
+			throw new ApplicationException($"Invalid layout.");
+
+		User32.PostMessage(window, WM_INPUTLANGCHANGEREQUEST, IntPtr.Zero, hkl);
 	}
 }

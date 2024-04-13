@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Nuke.Common;
 using Nuke.Common.Execution;
 using Nuke.Common.IO;
@@ -23,7 +25,7 @@ class Build : NukeBuild
     [Solution] readonly Solution Solution;
 
     AbsolutePath OutputDirectory => RootDirectory / "Output";
-    AbsolutePath PublishDirectory => OutputDirectory / "Publish";
+    //AbsolutePath PublishDirectory => OutputDirectory / "Publish";
 	
     public static int Main ()
     {
@@ -44,26 +46,23 @@ class Build : NukeBuild
     Target BuildCppProjects => _ => _
         .Executes(() =>
         {
-            var hookProject = Solution.GetProject("NativeLangHook");
-            var wrapperProject = Solution.GetProject("NativeLangHookWrapperCpp");
+	        var settings = new MSBuildSettings()
+		        .SetConfiguration(Configuration.Release)
+		        .SetOutDir(OutputDirectory)
+		        .EnableNoLogo();
 
-            var settings = new MSBuildSettings()
-                .SetConfiguration(Configuration.Release)
-                .SetOutDir(OutputDirectory)
-                .EnableNoLogo();
+	        var cppProjects = GetAllCppProjects(Solution);
 
-            MSBuild(settings
-                .SetProjectFile(hookProject)
-                .SetTargetPlatform(MSBuildTargetPlatform.x86));
-
-            MSBuild(settings
-                .SetProjectFile(hookProject)
-                .SetTargetPlatform(MSBuildTargetPlatform.x64));
-
-            MSBuild(settings
-                .SetProjectFile(wrapperProject)
-                .SetTargetPlatform(MSBuildTargetPlatform.x86)
-           );
+	        foreach (var project in cppProjects)
+	        {
+		        //Build for both, x86 and x64, platforms
+		        MSBuild(settings
+			        .SetProjectFile(project)
+			        .SetTargetPlatform(MSBuildTargetPlatform.x86));
+		        MSBuild(settings
+			        .SetProjectFile(project)
+			        .SetTargetPlatform(MSBuildTargetPlatform.x64));
+	        }
         });
 
     Target Clean => _ => _
@@ -110,4 +109,10 @@ class Build : NukeBuild
 	//			.SetPublishTrimmed(true)
 	//			);
 	//		});
+
+	IEnumerable<Project> GetAllCppProjects(Solution solution)
+	{
+		return solution.AllProjects.Where(p =>
+			string.Equals(p.Path.Extension, ".vcxproj", StringComparison.OrdinalIgnoreCase));
+	}
 }

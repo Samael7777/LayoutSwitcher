@@ -37,4 +37,7 @@ internal class User32
 
     [DllImport("user32.dll", EntryPoint="GetAncestor")]
     public static extern  IntPtr GetAncestor(IntPtr hwnd, int gaFlags);
+
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+    public static extern  IntPtr LoadKeyboardLayout([In] [MarshalAs(UnmanagedType.LPWStr)] string pwszKLID, int Flags) ;
 }

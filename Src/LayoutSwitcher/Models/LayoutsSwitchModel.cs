@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LayoutControl;
+using LayoutControl.ShellHookTools;
 using LayoutSwitcher.Extensions;
 
 namespace LayoutSwitcher.Models;
@@ -10,7 +11,7 @@ public partial class LayoutsSwitchModel : ObservableObject
     private readonly ReaderWriterLockSlim _lock;
 
     private readonly Settings _settings;
-    private readonly ChangeLayoutHook _changeLayoutHook;
+    private readonly ShellHook _shellHook;
 
     [ObservableProperty] private KeyboardLayout _currentLayout;
     
@@ -18,10 +19,10 @@ public partial class LayoutsSwitchModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(AvailableLayouts))] 
     private KeyboardLayout[] _cyclingLayouts;
 
-    public LayoutsSwitchModel(Settings settings, ChangeLayoutHook changeLayoutHook)
+    public LayoutsSwitchModel(Settings settings, ShellHook shellHook)
     {
         _settings = settings;
-        _changeLayoutHook = changeLayoutHook;
+        _shellHook = shellHook;
         
         _lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
         _currentLayout = KeyboardLayoutInfo.GetForegroundWindowLayout();
@@ -59,16 +60,14 @@ public partial class LayoutsSwitchModel : ObservableObject
 
             //var index = CyclingLayouts.FirstIndexOf(CurrentLayout);
             var currentLayout = LayoutController.GetForegroundWindowKeyboardLayout();
+
 			var index = CyclingLayouts.FirstIndexOf(currentLayout);
             var nextIndex = index == -1 || index == CyclingLayouts.Length - 1
                 ? 0
                 : index + 1;
             var target = CyclingLayouts[nextIndex];
 
-			if (_settings.UseHookToChangeLayout)
-				_changeLayoutHook.ChangeLayoutRequest(target);
-			else
-				LayoutController.ChangeLayoutOnForegroundWindow(target);
+			LayoutController.ChangeLayoutOnForegroundWindow(target);
         }
         finally
         {

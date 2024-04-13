@@ -52,14 +52,8 @@
           "HotKeyHook .dll": {}
         }
       },
-      "IpcCommunicator/1.0.0": {
-        "runtime": {
-          "IpcCommunicator.dll": {}
-        }
-      },
       "LayoutControl/1.0.0": {
         "dependencies": {
-          "IpcCommunicator": "1.0.0",
           "VirtualKeys": "1.0.0"
         },
         "runtime": {
@@ -106,11 +100,6 @@
       "hashPath": "microsoft.xaml.behaviors.wpf.1.1.77.nupkg.sha512"
     },
     "HotKeyHook/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "IpcCommunicator/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

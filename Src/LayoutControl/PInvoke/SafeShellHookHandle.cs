@@ -3,16 +3,17 @@ using System.Runtime.InteropServices;
 
 namespace LayoutControl.PInvoke;
 
-[DebuggerDisplay("{handle.ToInt64()}")]
-internal class SafeLayoutChangeHookHandle : SafeHandle
+[DebuggerDisplay("{handle.ToInt32()}")]
+internal class SafeShellHookHandle : SafeHandle
 {
-    public SafeLayoutChangeHookHandle() : base(IntPtr.Zero, true)
+    public SafeShellHookHandle() : base(IntPtr.Zero, true)
     { }
-
+	
     protected override bool ReleaseHandle()
     {
         return IsInvalid || User32.UnhookWindowsHookEx(handle);
     }
 
     public override bool IsInvalid => handle == IntPtr.Zero;
+
 }

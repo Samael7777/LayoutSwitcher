@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Threading;
-using LayoutControl;
+using LayoutControl.ShellHookTools;
 using LayoutSwitcher.Adapters;
 using LayoutSwitcher.MessageWindow;
 using LayoutSwitcher.Models;
@@ -21,7 +21,7 @@ public partial class App
     private readonly HotKeyHook.HotKeyHook _hotKeyHook;
     private readonly HotkeysModel _hotkeysModel;
     private readonly SettingsChangesWatcher _settingsChangesWatcher;
-    private readonly ChangeLayoutHook _changeLayoutHook;
+    private readonly ShellHook _shellHook;
     private readonly MsgOnlyWindow _msgWindow;
     private readonly HotKeyHookMsgWindowAdapter _hotkeyHookMsgWindowAdapter;
     private readonly ChangeLayoutHookMsgWindowAdapter _changeLayoutHookMsgWindowAdapter;
@@ -52,11 +52,11 @@ public partial class App
 
         //Init layout hook
         _changeLayoutHookMsgWindowAdapter = new ChangeLayoutHookMsgWindowAdapter(_msgWindow);
-        _changeLayoutHook = new ChangeLayoutHook(_changeLayoutHookMsgWindowAdapter);
+        _shellHook = new ShellHook(_changeLayoutHookMsgWindowAdapter);
 
         //Init main app model
-        var layoutsSwitchModel = new LayoutsSwitchModel(settings, _changeLayoutHook);
-        _changeLayoutHook.LayoutChanged += (_, a) =>
+        var layoutsSwitchModel = new LayoutsSwitchModel(settings, _shellHook);
+        _shellHook.LayoutChanged += (_, a) =>
             layoutsSwitchModel.SetCurrentLayout(a.NewLayout);
 
         //Init HotKey
@@ -118,7 +118,7 @@ public partial class App
         _hotkeysModel.Dispose();
         _hotKeyHook.Dispose();
         _hotkeyHookMsgWindowAdapter.Dispose();
-        _changeLayoutHook.Dispose();
+        _shellHook.Dispose();
         _changeLayoutHookMsgWindowAdapter.Dispose();
         _msgWindow.Close();
         _appMutex.ReleaseMutex();

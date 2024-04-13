@@ -32,9 +32,6 @@ public partial class Settings : ObservableObject
     [ObservableProperty] 
     private HotKey _appToggleHotkey = HotKey.Empty;
 
-    [ObservableProperty] 
-    private bool _useHookToChangeLayout;
-
     [JsonIgnore]
     public bool IsChanged { get; private set; }
 
@@ -70,10 +67,5 @@ public partial class Settings : ObservableObject
     partial void OnAppToggleHotkeyChanged(HotKey value)
     {
         IsChanged = true;
-    }
-
-    partial void OnUseHookToChangeLayoutChanged(bool value)
-    {
-	    IsChanged = true;
     }
 }

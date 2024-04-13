@@ -31,17 +31,17 @@ internal static class Kernel32
     public static extern bool CloseHandle(IntPtr handle);
     
     [DllImport("kernel32.dll", SetLastError = true)]
-    public static extern SafeProcHandle OpenProcess(ACCESS_MASK dwDesiredAccess, 
+    public static extern SafeProcessHandle OpenProcess(ACCESS_MASK dwDesiredAccess, 
         [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle, uint dwProcessId);
 
     [DllImport("kernel32.dll", SetLastError = true)]
-    public static extern bool IsWow64Process2([In] SafeProcHandle hProcess, 
+    public static extern bool IsWow64Process2([In] SafeProcessHandle hProcess, 
         out IMAGE_FILE_MACHINE pProcessMachine, out IMAGE_FILE_MACHINE pNativeMachine);
 
     
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool IsWow64Process(SafeProcHandle hProcess, 
+    public static extern bool IsWow64Process(SafeProcessHandle hProcess, 
         [MarshalAs(UnmanagedType.Bool)] out bool isWow64Process) ;
 
 }

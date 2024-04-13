@@ -8,16 +8,10 @@
     ".NETCoreApp,Version=v6.0": {
       "LayoutControl/1.0.0": {
         "dependencies": {
-          "IpcCommunicator": "1.0.0",
           "VirtualKeys": "1.0.0"
         },
         "runtime": {
           "LayoutControl.dll": {}
-        }
-      },
-      "IpcCommunicator/1.0.0": {
-        "runtime": {
-          "IpcCommunicator.dll": {}
         }
       },
       "VirtualKeys/1.0.0": {
@@ -29,11 +23,6 @@
   },
   "libraries": {
     "LayoutControl/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "IpcCommunicator/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

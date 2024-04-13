@@ -2,9 +2,9 @@
 
 namespace LayoutControl.PInvoke;
 
-public class SafeProcHandle : SafeHandle
+public class SafeProcessHandle : SafeHandle
 {
-    public SafeProcHandle() : base(IntPtr.Zero, true)
+    public SafeProcessHandle() : base(IntPtr.Zero, true)
     { }
 
     protected override bool ReleaseHandle()
