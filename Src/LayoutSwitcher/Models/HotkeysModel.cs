@@ -53,7 +53,8 @@ public partial class HotkeysModel : ObservableObject, IDisposable
 
     private void OnHotkeyCaptured(object? sender, HotKeyEventArgs e)
     {
-        if (e.HotKey == null || e.HotKey != _settings.AppToggleHotkey) return;
+        if (e.HotKey == null) return;
+        //e.HotKey != _settings.AppToggleHotkey
         LayoutToggleRequested?.Invoke(this, EventArgs.Empty);
     }
 

@@ -7,7 +7,7 @@ namespace LayoutSwitcher.MessageWindow;
 
 public partial class MsgOnlyWindow
 {
-    private const int HWND_MESSAGE = -3;
+    private const int HwndMessage = -3;
     private readonly ManualResetEventSlim _initEvent;
 
     private HwndSource? _hWndSource;
@@ -56,7 +56,7 @@ public partial class MsgOnlyWindow
             throw new ApplicationException("Error initializing message window.");
 
         _hWndSource.AddHook(WndProc);
-        var oldParent = SetParent(_hWndSource.Handle, (IntPtr)HWND_MESSAGE);
+        var oldParent = SetParent(_hWndSource.Handle, (IntPtr)HwndMessage);
         if (oldParent == IntPtr.Zero)
         {
 			var error = Marshal.GetLastWin32Error();
