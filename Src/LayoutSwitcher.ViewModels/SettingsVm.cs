@@ -36,7 +36,7 @@ public partial class SettingsVm : ObservableObject
         _autorunModel = autorunModel;
         _cycledLayoutsModel = cycledLayoutsModel;
         _hotkeyModel = hotkeyModel;
-       
+        AppHotkeyIndex = _hotkeyModel.HotKeyIndex;
         _cycledLayoutsModel.PropertyChanged += OnLayoutModelChanged;
     }
 
