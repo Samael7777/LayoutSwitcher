@@ -8,6 +8,7 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Resources\Keyboard.ico</ApplicationIcon>
     <OutDir Condition="'$(SolutionOutputDir)' != ''">$(SolutionOutputDir)</OutDir>
+    <AssemblyName>LayoutSwitcher</AssemblyName>
   </PropertyGroup>	
 	
   <ItemGroup>
