@@ -12,6 +12,8 @@ public partial class SettingsVm : ObservableObject
     private readonly AutorunModel _autorunModel;
     private readonly IHotKeyModel _hotkeyModel;
 
+    [ObservableProperty] private int _appHotkeyIndex;
+
     public List<string> AvailableLayouts => _cycledLayoutsModel.AvailableLayouts
         .Select(l=>l.LayoutDisplayName)
         .ToList();
@@ -21,12 +23,6 @@ public partial class SettingsVm : ObservableObject
         .ToList();
 
     public List<string> AvailableHotkeys => _hotkeyModel.AvailableCombinations.ToList();
-
-    public int AppHotkeyIndex
-    {
-        get => _hotkeyModel.HotKeyIndex;
-        set => _hotkeyModel.HotKeyIndex = value;
-    }
 
     public bool Autorun
     {
@@ -41,51 +37,45 @@ public partial class SettingsVm : ObservableObject
         _cycledLayoutsModel = cycledLayoutsModel;
         _hotkeyModel = hotkeyModel;
        
-        _cycledLayoutsModel.PropertyChanged += OnLayoutModelsChanged;
+        _cycledLayoutsModel.PropertyChanged += OnLayoutModelChanged;
     }
 
     #region Relay commands
 
     [RelayCommand]
-    private void AddToCycling(object indexObj)
+    private void SetNewAppHotkey(int index)
     {
-        if (indexObj is not int index || index < 0) return;
+        if (_hotkeyModel.HotKeyIndex == index) return;
 
+        _hotkeyModel.HotKeyIndex = index;
+        if (_hotkeyModel.HotKeyIndex != index)
+            AppHotkeyIndex = _hotkeyModel.HotKeyIndex;
+    }
+
+    [RelayCommand]
+    private void AddToCycling(int index)
+    {
         var layout = _cycledLayoutsModel.AvailableLayouts[index];
         _cycledLayoutsModel.AddToCycling(layout);
     }
 
     [RelayCommand]
-    private void RemoveFromCycling(object indexObj)
+    private void RemoveFromCycling(int index)
     {
-        if (indexObj is not int index || index < 0) return;
-
         var layout = _cycledLayoutsModel.CycledLayouts[index];
         _cycledLayoutsModel.RemoveFromCycling(layout);
     }
 
     [RelayCommand]
-    private void MoveUp(object indexObj)
+    private void MoveUp(int index)
     {
-        if (indexObj is not int index || index < 0) return;
-
-        _cycledLayoutsModel.MoveCyclingLayoutUp(index);
+       _cycledLayoutsModel.MoveCyclingLayoutUp(index);
     }
 
     [RelayCommand]
-    private void MoveDown(object indexObj)
+    private void MoveDown(int index)
     {
-        if (indexObj is not int index || index < 0) return;
-
         _cycledLayoutsModel.MoveCyclingLayoutDown(index);
-    }
-
-    [RelayCommand]
-    private void SetNewAppHotkey(object indexObj)
-    {
-        if (indexObj is not int index || index < 0) return;
-
-        _hotkeyModel.HotKeyIndex = index;
     }
 
     [RelayCommand]
@@ -96,7 +86,7 @@ public partial class SettingsVm : ObservableObject
 
     #endregion
     
-    private void OnLayoutModelsChanged(object? sender, PropertyChangedEventArgs e)
+    private void OnLayoutModelChanged(object? sender, PropertyChangedEventArgs e)
     {
         var property = e.PropertyName;
         

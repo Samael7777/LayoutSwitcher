@@ -6,6 +6,7 @@ using LayoutSwitcher.Gui.WPF.Models;
 using LayoutSwitcher.Gui.WPF.Windows;
 using LayoutSwitcher.Models;
 using LayoutSwitcher.Models.Interfaces;
+using LayoutSwitcher.Models.Tools;
 using LayoutSwitcher.ViewModels;
 
 // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
@@ -29,11 +30,7 @@ public class AppMain : IDisposable
     {
         //Check for single application instance
         _singleInstanceChecker = new SingleInstanceChecker(AppId);
-       
-        if (_singleInstanceChecker.IsOtherInstancesPresents())
-        {
-            throw new ApplicationException("Application already running.");
-        }
+        _singleInstanceChecker.CheckOtherInstancesThrowException();
         
         var appPath = Process.GetCurrentProcess().MainModule?.FileName
                       ?? throw new ApplicationException("Can't get app path.");
@@ -54,10 +51,8 @@ public class AppMain : IDisposable
 
         _hotKeyModel = new HotKeyModel(availableCombinations, _settings.LayoutToggleHotKeyIndex);
         _hotKeyModel.HotKeyPressed += (_, _) => _cycledLayoutsModel.SwitchToNextLayout();
-        _hotKeyModel.HotKeyAlreadyUsed += (_, _) => 
-            MessageBox.Show($@"Selected combination already used in OS.", 
-                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
+        _hotKeyModel.HotKeyAlreadyUsed += ShowAlreadyRegisteredHotKeyMessage;
+     
         _systemSettingsChangesWatcher = new SystemSettingsWatcher();
         _systemSettingsChangesWatcher.SystemLayoutsChanged += (_, _) =>
             _cycledLayoutsModel.CleanFromOrphanedLayouts();
@@ -65,7 +60,7 @@ public class AppMain : IDisposable
         var autorunModel = new AutorunModel(AppId, appPath);
         
         var settingsVm = new SettingsVm(autorunModel, _cycledLayoutsModel, _hotKeyModel);
-        SettingsWindow = new SettingsWindow()
+        SettingsWindow = new SettingsWindow
         {
             DataContext = settingsVm
         };
@@ -76,13 +71,19 @@ public class AppMain : IDisposable
         };
     }
 
+    private static void ShowAlreadyRegisteredHotKeyMessage(object? sender, EventArgs e)
+    {
+        MessageBox.Show($@"Selected combination already used in other application.", 
+            "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+    }
+
     private void SaveSettings()
     {
         _settings.CycledLayout = _cycledLayoutsModel.CycledLayouts;
         _settings.LayoutToggleHotKeyIndex = _hotKeyModel.HotKeyIndex;
         _settings.Save();
     }
-
+    
     #region Dispose
 
     private bool _disposed;

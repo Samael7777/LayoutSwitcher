@@ -55,7 +55,7 @@
             <TextBlock Text="Current layout switch hotkey: " HorizontalAlignment="Left" VerticalAlignment="Center" />
             <ComboBox x:Name="HotkeySelector" ItemsSource="{Binding AvailableHotkeys}" SelectedIndex="{Binding AppHotkeyIndex}" Width="200" Margin="5,0,0,0">
                 <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectionChanged">
+                    <i:EventTrigger EventName="DropDownClosed">
                         <i:InvokeCommandAction Command="{Binding SetNewAppHotkeyCommand}" CommandParameter="{Binding ElementName=HotkeySelector, Path=SelectedIndex}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>

@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
-    <PackageReference Include="RegistryWatcher" Version="1.0.0" />
+    <PackageReference Include="RegistryWatcher" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel;
 using System.Windows;
+using LayoutSwitcher.ViewModels.Interfaces;
 
 namespace LayoutSwitcher.Gui.WPF.Windows;
 
 /// <summary>
 /// Логика взаимодействия для SettingsWindow.xaml
 /// </summary>
-public partial class SettingsWindow 
+public partial class SettingsWindow : ISettingsWindow
 {
     public SettingsWindow()
     {

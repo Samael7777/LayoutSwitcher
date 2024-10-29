@@ -1,6 +1,9 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Threading;
-using LayoutSwitcher.Gui.WPF.Models;
+using Hardcodet.Wpf.TaskbarNotification;
+using LayoutSwitcher.Models.Exceptions;
+using LayoutSwitcher.ViewModels;
 
 namespace LayoutSwitcher.Gui.WPF;
 
@@ -9,20 +12,29 @@ namespace LayoutSwitcher.Gui.WPF;
 /// </summary>
 public partial class App
 {
+    private readonly TaskbarIcon _taskbarIcon;
     private readonly AppMain _appMain;
-    private readonly TrayModel _trayModel;
+    // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+    private readonly TrayViewModel _trayViewModel;
     
     public App()
     {
-        InitializeComponent();
         Current.DispatcherUnhandledException += OnException;
         AppDomain.CurrentDomain.UnhandledException += OnDomainException;
 
+        InitializeComponent();
+
         _appMain = new AppMain();
-        _trayModel = new TrayModel(_appMain.SettingsWindow)
+        _trayViewModel = new TrayViewModel(_appMain.SettingsWindow, Current.Shutdown);
+        _taskbarIcon = new TaskbarIcon
         {
-            ShutdownCommand = () => Current.Shutdown()
+            Icon = WPF.Resources.Keyboard,
+            ContextMenu = Current.Resources["TrayContextMenu"] as ContextMenu
         };
+        if (_taskbarIcon.ContextMenu != null) 
+            _taskbarIcon.ContextMenu.DataContext = _trayViewModel;
+        _taskbarIcon.DoubleClickCommand = _trayViewModel.SettingsCommand;
+        _taskbarIcon.Visibility = Visibility.Visible;
     }
 
     private void OnDomainException(object sender, UnhandledExceptionEventArgs e)
@@ -36,16 +48,40 @@ public partial class App
         e.Handled = true;
         HandleException(e.Exception);
     }
-
-    private void HandleException(Exception ex)
+    
+    private void OnApplicationShutdown(object sender, ExitEventArgs e)
     {
-        MessageBox.Show(ex.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+        _taskbarIcon.Visibility = Visibility.Collapsed;
+        DisposeComponents();
+    }
+
+    private void DisposeComponents()
+    {
+        _taskbarIcon.Dispose();
+        _appMain.Dispose();
+    }
+
+    private static void HandleException(Exception ex)
+    {
+        var message = GetErrorStringForException(ex);
+        ShowErrorMessage(message);
         Current?.Shutdown();
     }
 
-    private void OnApplicationShutdown(object sender, ExitEventArgs e)
+    private static string GetErrorStringForException(Exception ex)
     {
-        _trayModel.Dispose();
-        _appMain.Dispose();
+        var message = ex switch
+        {
+            ApplicationAlreadyRunningException => 
+                "Other instance of application is already running.",
+            _ => ex.Message
+        };
+
+        return message;
+    }
+
+    private static void ShowErrorMessage(string message)
+    {
+        MessageBox.Show(message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
     }
 }

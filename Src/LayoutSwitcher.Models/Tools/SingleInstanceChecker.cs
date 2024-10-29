@@ -1,4 +1,6 @@
-﻿namespace LayoutSwitcher.Gui.WPF;
+﻿using LayoutSwitcher.Models.Exceptions;
+
+namespace LayoutSwitcher.Models.Tools;
 
 public class SingleInstanceChecker : IDisposable
 {
@@ -14,6 +16,12 @@ public class SingleInstanceChecker : IDisposable
     public bool IsOtherInstancesPresents(bool exitContext = false)
     {
         return !_appMutex.WaitOne(_checkTimeoutMs, exitContext);
+    }
+
+    public void CheckOtherInstancesThrowException()
+    {
+        if (IsOtherInstancesPresents())
+            throw new ApplicationAlreadyRunningException();
     }
 
     #region Dispose
