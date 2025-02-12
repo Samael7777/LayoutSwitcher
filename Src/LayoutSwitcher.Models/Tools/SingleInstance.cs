@@ -2,12 +2,12 @@
 
 namespace LayoutSwitcher.Models.Tools;
 
-public class SingleInstanceChecker : IDisposable
+public class SingleInstance : IDisposable
 {
     private readonly Mutex _appMutex;
     private readonly int _checkTimeoutMs;
 
-    public SingleInstanceChecker(string appId, int checkTimeoutMs = 500)
+    public SingleInstance(string appId, int checkTimeoutMs = 500)
     {
         _appMutex = new Mutex(true, appId + "_mutex");
         _checkTimeoutMs = checkTimeoutMs;
@@ -28,7 +28,7 @@ public class SingleInstanceChecker : IDisposable
 
     private bool _disposed;
 
-    ~SingleInstanceChecker()
+    ~SingleInstance()
     {
         Dispose(false);
     }
