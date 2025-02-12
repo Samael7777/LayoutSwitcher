@@ -29,19 +29,19 @@ public class AppRoot : IDisposable
     {
         InitCheckSingleAppInstance(out _singleInstance);
 
-        var appPath = Process.GetCurrentProcess().MainModule?.FileName
-                      ?? throw new ApplicationException("Can't get app path.");
-        
         InitSettings(out _settings);
         _cycledLayoutsModel = new CycledLayoutsModel(_settings.CycledLayout);
         InitHotKeys(_settings, _cycledLayoutsModel, out _hotKeyModel);
         InitSystemSettingsWatcher(_cycledLayoutsModel, out _systemSettingsChangesWatcher);
-        InitSettingsWindow(appPath, _cycledLayoutsModel, _hotKeyModel);
+        InitSettingsWindow(_cycledLayoutsModel, _hotKeyModel);
     }
 
     [MemberNotNull(nameof(SettingsWindow))]
-    private void InitSettingsWindow(string appPath, CycledLayoutsModel cycledLayoutsModel, HotKeyModelWpf hotKeyModel)
+    private void InitSettingsWindow(CycledLayoutsModel cycledLayoutsModel, HotKeyModelWpf hotKeyModel)
     {
+        var appPath = Process.GetCurrentProcess().MainModule?.FileName
+                      ?? throw new ApplicationException("Can't get app path.");
+
         var autorunModel = new AutorunModel(AppId, appPath);
         var settingsVm = new SettingsVm(autorunModel, cycledLayoutsModel, hotKeyModel);
         SettingsWindow = new SettingsWindow
@@ -61,7 +61,7 @@ public class AppRoot : IDisposable
         watcher.SystemLayoutsChanged += (_, _) => cycledLayoutsModel.CleanFromOrphanedLayouts();
     }
 
-    private void InitHotKeys(SettingsInRegistry settings, CycledLayoutsModel cycledLayoutsModel, out HotKeyModelWpf hotKeyModel)
+    private static void InitHotKeys(SettingsInRegistry settings, CycledLayoutsModel cycledLayoutsModel, out HotKeyModelWpf hotKeyModel)
     {
         var availableCombinations = new List<KeyGesture>
         {
@@ -79,14 +79,16 @@ public class AppRoot : IDisposable
         instance = new SingleInstance(AppId);
         instance.CheckOtherInstancesThrowException();
     }
+
     private static void InitSettings(out SettingsInRegistry settings)
     {
         settings = new SettingsInRegistry(AppRegistryKey);
         settings.Load();
     }
+
     private static void ShowAlreadyRegisteredHotKeyMessage(object? sender, EventArgs e)
     {
-        MessageBox.Show($@"Selected combination already used in other application.", 
+        MessageBox.Show(@"Selected combination already used in other application.", 
             "Error", MessageBoxButton.OK, MessageBoxImage.Error);
     }
 
