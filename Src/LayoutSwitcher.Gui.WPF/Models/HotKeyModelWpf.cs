@@ -6,7 +6,7 @@ using NHotkey.Wpf;
 
 namespace LayoutSwitcher.Gui.WPF.Models;
 
-public class HotKeyModel : IHotKeyModel
+public class HotKeyModelWpf : IHotKeyModel
 {
     private const string GestureName = "SwitchLayout";
 
@@ -21,7 +21,6 @@ public class HotKeyModel : IHotKeyModel
         _availableCombinations.Select(k => k.GetDisplayStringForCulture(CultureInfo.InvariantCulture))
             .ToList();
 
-    //todo
     public int HotKeyIndex
     {
         get => _hotKeyIndex;
@@ -35,13 +34,9 @@ public class HotKeyModel : IHotKeyModel
         }
     }
     
-    public HotKeyModel(IEnumerable<KeyGesture> availableCombinations, int currentIndex)
+    public HotKeyModelWpf(IEnumerable<KeyGesture> availableCombinations, int currentIndex)
     {
-        _availableCombinations = new List<KeyGesture>
-        {
-            new (Key.None, ModifierKeys.None, "None") //No combination
-        };
-
+        _availableCombinations = [new KeyGesture(Key.None, ModifierKeys.None, "None")];
         _availableCombinations.AddRange(availableCombinations);
 
         if (currentIndex < 0 || currentIndex >= _availableCombinations.Count)

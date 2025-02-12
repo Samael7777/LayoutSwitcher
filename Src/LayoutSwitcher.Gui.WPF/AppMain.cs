@@ -47,7 +47,7 @@ public class AppMain : IDisposable
             new (Key.None, ModifierKeys.Control | ModifierKeys.Shift, "Ctrl+Shift")
         };
 
-        _hotKeyModel = new HotKeyModel(availableCombinations, _settings.LayoutToggleHotKeyIndex);
+        _hotKeyModel = new HotKeyModelWpf(availableCombinations, _settings.LayoutToggleHotKeyIndex);
         _hotKeyModel.HotKeyPressed += (_, _) => _cycledLayoutsModel.SwitchToNextLayout();
         _hotKeyModel.HotKeyAlreadyUsed += ShowAlreadyRegisteredHotKeyMessage;
      
