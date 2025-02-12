@@ -14,9 +14,7 @@ public partial class App
 {
     private readonly TaskbarIcon _taskbarIcon;
     private readonly AppMain _appMain;
-    // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
-    private readonly TrayViewModel _trayViewModel;
-    
+
     public App()
     {
         Current.DispatcherUnhandledException += OnException;
@@ -25,15 +23,15 @@ public partial class App
         InitializeComponent();
 
         _appMain = new AppMain();
-        _trayViewModel = new TrayViewModel(_appMain.SettingsWindow, Current.Shutdown);
+        var trayViewModel = new TrayViewModel(_appMain.SettingsWindow, Current.Shutdown);
         _taskbarIcon = new TaskbarIcon
         {
             Icon = WPF.Resources.Keyboard,
             ContextMenu = Current.Resources["TrayContextMenu"] as ContextMenu
         };
         if (_taskbarIcon.ContextMenu != null) 
-            _taskbarIcon.ContextMenu.DataContext = _trayViewModel;
-        _taskbarIcon.DoubleClickCommand = _trayViewModel.SettingsCommand;
+            _taskbarIcon.ContextMenu.DataContext = trayViewModel;
+        _taskbarIcon.DoubleClickCommand = trayViewModel.SettingsCommand;
         _taskbarIcon.Visibility = Visibility.Visible;
     }
 
