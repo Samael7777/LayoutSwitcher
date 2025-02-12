@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
-using LayoutSwitcher.Gui.WPF.Adapters;
 using LayoutSwitcher.Gui.WPF.Models;
 using LayoutSwitcher.Gui.WPF.Windows;
 using LayoutSwitcher.Models;
@@ -40,8 +39,7 @@ public class AppMain : IDisposable
         _settings = new SettingsInRegistry(AppRegistryKey);
         _settings.Load();
         
-        var layoutController = new LayoutControllerAdapter();
-        _cycledLayoutsModel = new CycledLayoutsModel(layoutController, _settings.CycledLayout);
+        _cycledLayoutsModel = new CycledLayoutsModel(_settings.CycledLayout);
 
         var availableCombinations = new List<KeyGesture>
         {

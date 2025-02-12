@@ -51,11 +51,4 @@ public static class LayoutController
         var hkl = User32.GetKeyboardLayout(threadId);
         return KeyboardLayout.GetLayout(hkl);
     }
-    
-    //public static KeyboardLayout GetForegroundWindowKeyboardLayout()
-    //{
-    //    var foregroundWindow = WindowHelper.GetForegroundFocusedWnd();
-    //    var currentLayout = WindowHelper.GetWindowKeyboardLayout(foregroundWindow);
-    //    return currentLayout;
-    //}
 }

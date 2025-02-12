@@ -1,27 +1,24 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LayoutSwitcher.Control;
-using LayoutSwitcher.Models.Interfaces;
 
 namespace LayoutSwitcher.Models;
 
 public partial class CycledLayoutsModel : ObservableObject
 {
     private readonly ReaderWriterLockSlim _lock;
-    private readonly ILayoutController _layoutController;
 
     [ObservableProperty] 
     [NotifyPropertyChangedFor(nameof(AvailableLayouts))]
     private ObservableCollection<KeyboardLayout> _cycledLayouts;
 
     public KeyboardLayout[] AvailableLayouts =>
-        _layoutController.GetSystemLayouts()
+        LayoutController.GetSystemLayouts()
             .Where(l => !CycledLayouts.Contains(l))
             .ToArray();
 
-    public CycledLayoutsModel(ILayoutController layoutController, IEnumerable<KeyboardLayout> cycledLayouts)
+    public CycledLayoutsModel(IEnumerable<KeyboardLayout> cycledLayouts)
     {   
-        _layoutController = layoutController;
         _lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
         _cycledLayouts = new ObservableCollection<KeyboardLayout>(cycledLayouts);
         _cycledLayouts.CollectionChanged += (_, _) => OnPropertyChanged(nameof(CycledLayouts));
@@ -29,9 +26,9 @@ public partial class CycledLayoutsModel : ObservableObject
 
     public void SwitchToNextLayout()
     {
-        var currentLayout = _layoutController.GetForegroundWindowLayout();
+        var currentLayout = LayoutController.GetForegroundWindowLayout();
         var nextLayout = GetNextLayout(currentLayout);
-        _layoutController.ChangeLayoutOnForegroundWindow(nextLayout);
+        LayoutController.ChangeLayoutOnForegroundWindow(nextLayout);
     }
     
     public void AddToCycling(KeyboardLayout layout)
@@ -91,7 +88,7 @@ public partial class CycledLayoutsModel : ObservableObject
 
     public void CleanFromOrphanedLayouts()
     {
-        var systemLayouts = _layoutController.GetSystemLayouts();
+        var systemLayouts = LayoutController.GetSystemLayouts();
         var cleaned = CycledLayouts.Where(l => systemLayouts.Contains(l));
         CycledLayouts = new ObservableCollection<KeyboardLayout>(cleaned);
     }
