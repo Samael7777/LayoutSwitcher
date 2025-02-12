@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Input;
 using LayoutSwitcher.Gui.WPF.Models;
@@ -18,9 +19,9 @@ public class AppRoot : IDisposable
 
     private readonly SingleInstance _singleInstance;
     private readonly CycledLayoutsModel _cycledLayoutsModel;
-    private SystemSettingsWatcher _systemSettingsChangesWatcher;
-    private HotKeyModelWpf _hotKeyModel;
-    private SettingsInRegistry _settings;
+    private readonly SystemSettingsWatcher _systemSettingsChangesWatcher;
+    private readonly HotKeyModelWpf _hotKeyModel;
+    private readonly SettingsInRegistry _settings;
     
     public SettingsWindow SettingsWindow { get; set; }
 
@@ -38,6 +39,7 @@ public class AppRoot : IDisposable
         InitSettingsWindow(appPath, _cycledLayoutsModel, _hotKeyModel);
     }
 
+    [MemberNotNull(nameof(SettingsWindow))]
     private void InitSettingsWindow(string appPath, CycledLayoutsModel cycledLayoutsModel, HotKeyModelWpf hotKeyModel)
     {
         var autorunModel = new AutorunModel(AppId, appPath);
