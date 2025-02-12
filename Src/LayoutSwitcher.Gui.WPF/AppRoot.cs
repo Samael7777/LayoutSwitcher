@@ -4,7 +4,6 @@ using System.Windows.Input;
 using LayoutSwitcher.Gui.WPF.Models;
 using LayoutSwitcher.Gui.WPF.Windows;
 using LayoutSwitcher.Models;
-using LayoutSwitcher.Models.Interfaces;
 using LayoutSwitcher.Models.Tools;
 using LayoutSwitcher.ViewModels;
 
@@ -12,7 +11,7 @@ using LayoutSwitcher.ViewModels;
 
 namespace LayoutSwitcher.Gui.WPF;
 
-public class AppMain : IDisposable
+public class AppRoot : IDisposable
 {
     private const string AppId = "LayoutSwitcher";
     private const string AppRegistryKey = @"Vadim Kutin\Layout Switcher";
@@ -20,12 +19,12 @@ public class AppMain : IDisposable
     private readonly SingleInstanceChecker _singleInstanceChecker;
     private readonly CycledLayoutsModel _cycledLayoutsModel;
     private readonly SystemSettingsWatcher _systemSettingsChangesWatcher;
-    private readonly IHotKeyModel _hotKeyModel;
-    private readonly ISettings _settings;
+    private readonly HotKeyModelWpf _hotKeyModel;
+    private readonly SettingsInRegistry _settings;
     
     public SettingsWindow SettingsWindow { get; }
 
-    public AppMain()
+    public AppRoot()
     {
         //Check for single application instance
         _singleInstanceChecker = new SingleInstanceChecker(AppId);
@@ -86,7 +85,7 @@ public class AppMain : IDisposable
 
     private bool _disposed;
 
-    ~AppMain()
+    ~AppRoot()
     {
         Dispose(false);
     }

@@ -1,10 +1,9 @@
 ﻿using LayoutSwitcher.Control;
-using LayoutSwitcher.Models.Interfaces;
 // ReSharper disable InconsistentNaming
 
 namespace LayoutSwitcher.Models;
 
-public abstract class BaseSettings : ISettings
+public abstract class BaseSettings
 {
     protected IEnumerable<KeyboardLayout> cycledLayout = Array.Empty<KeyboardLayout>();
     protected int layoutToggleHotKeyIndex;

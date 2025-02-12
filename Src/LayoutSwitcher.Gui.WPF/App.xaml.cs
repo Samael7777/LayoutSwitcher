@@ -13,7 +13,7 @@ namespace LayoutSwitcher.Gui.WPF;
 public partial class App
 {
     private readonly TaskbarIcon _taskbarIcon;
-    private readonly AppMain _appMain;
+    private readonly AppRoot _appRoot;
 
     public App()
     {
@@ -22,8 +22,8 @@ public partial class App
 
         InitializeComponent();
 
-        _appMain = new AppMain();
-        var trayViewModel = new TrayViewModel(_appMain.SettingsWindow, Current.Shutdown);
+        _appRoot = new AppRoot();
+        var trayViewModel = new TrayViewModel(_appRoot.SettingsWindow, Current.Shutdown);
         _taskbarIcon = new TaskbarIcon
         {
             Icon = WPF.Resources.Keyboard,
@@ -56,7 +56,7 @@ public partial class App
     private void DisposeComponents()
     {
         _taskbarIcon.Dispose();
-        _appMain.Dispose();
+        _appRoot.Dispose();
     }
 
     private static void HandleException(Exception ex)
