@@ -9,6 +9,7 @@
     <ApplicationIcon>Resources\Keyboard.ico</ApplicationIcon>
     <OutDir Condition="'$(SolutionOutputDir)' != ''">$(SolutionOutputDir)</OutDir>
     <AssemblyName>LayoutSwitcher</AssemblyName>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>	
 	
   <ItemGroup>
