@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         SizeToContent="WidthAndHeight"
         Icon="../Resources/Keyboard.ico"
-        Title="SettingsModel" 
+        Title="Settings" 
         d:DataContext="{d:DesignInstance Type=viewModels:SettingsVm, IsDesignTimeCreatable=False}">
 
     <i:Interaction.Triggers>
