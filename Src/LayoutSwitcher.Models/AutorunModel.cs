@@ -2,32 +2,25 @@
 
 namespace LayoutSwitcher.Models;
 
-public class AutorunModel
+public class AutorunModel(string appId, string appPath)
 {
-    private readonly string _appId;
-    private readonly string _appPath;
+    private readonly IAutorun _autorun = new AutorunTaskScheduler();
 
-    public AutorunModel(string appId, string appPath)
-    {
-        _appId = appId;
-        _appPath = appPath;
-    }
-    
     public bool Autorun
     {
-        get => AutorunHelper.IsAutorunEnabled(_appId);
+        get => _autorun.IsAutorunEnabled(appId);
         set
         {
-            if (value == AutorunHelper.IsAutorunEnabled(_appId)) 
+            if (value == _autorun.IsAutorunEnabled(appId)) 
                 return;
 
             if (value)
             {
-                AutorunHelper.AddToAutoRun(_appId, _appPath);
+                _autorun.AddToAutoRun(appId, appPath);
             }
             else
             {
-                AutorunHelper.RemoveFromAutorun(_appId);
+                _autorun.RemoveFromAutorun(appId);
             }
         }
     }
