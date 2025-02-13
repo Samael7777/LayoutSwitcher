@@ -14,7 +14,7 @@ public partial class App
 {
     private readonly TaskbarIcon _taskbarIcon;
     private readonly AppRoot _appRoot;
-
+    
     public App()
     {
         Current.DispatcherUnhandledException += OnException;
@@ -29,13 +29,13 @@ public partial class App
             Icon = WPF.Resources.Keyboard,
             ContextMenu = Current.Resources["TrayContextMenu"] as ContextMenu
         };
-        if (_taskbarIcon.ContextMenu != null) 
+        if (_taskbarIcon.ContextMenu != null)
             _taskbarIcon.ContextMenu.DataContext = trayViewModel;
         _taskbarIcon.DoubleClickCommand = trayViewModel.SettingsCommand;
         _taskbarIcon.Visibility = Visibility.Visible;
     }
 
-    private void OnDomainException(object sender, UnhandledExceptionEventArgs e)
+    private static void OnDomainException(object sender, UnhandledExceptionEventArgs e)
     {
         if (e.ExceptionObject is not Exception ex) return;
         HandleException(ex);
