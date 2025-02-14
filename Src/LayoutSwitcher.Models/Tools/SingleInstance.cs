@@ -2,20 +2,13 @@
 
 namespace LayoutSwitcher.Models.Tools;
 
-public class SingleInstance : IDisposable
+public class SingleInstance(string appId, int checkTimeoutMs = 500) : IDisposable
 {
-    private readonly Mutex _appMutex;
-    private readonly int _checkTimeoutMs;
-
-    public SingleInstance(string appId, int checkTimeoutMs = 500)
-    {
-        _appMutex = new Mutex(true, appId + "_mutex");
-        _checkTimeoutMs = checkTimeoutMs;
-    }
+    private readonly Mutex _appMutex = new(true, appId + "_mutex");
 
     public bool IsOtherInstancesPresents(bool exitContext = false)
     {
-        return !_appMutex.WaitOne(_checkTimeoutMs, exitContext);
+        return !_appMutex.WaitOne(checkTimeoutMs, exitContext);
     }
 
     public void CheckOtherInstancesThrowException()

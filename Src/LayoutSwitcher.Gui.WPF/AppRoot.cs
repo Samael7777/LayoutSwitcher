@@ -5,63 +5,35 @@ using System.Windows.Input;
 using LayoutSwitcher.Gui.WPF.Models;
 using LayoutSwitcher.Gui.WPF.Windows;
 using LayoutSwitcher.Models;
+using LayoutSwitcher.Models.Interfaces;
 using LayoutSwitcher.Models.Tools;
 using LayoutSwitcher.ViewModels;
-
-// ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
 
 namespace LayoutSwitcher.Gui.WPF;
 
 public class AppRoot : IDisposable
 {
-    private const string AppId = "LayoutSwitcher";
-    private const string AppRegistryKey = @"Vadim Kutin\Layout Switcher";
-
     private readonly SingleInstance _singleInstance;
-    private readonly CycledLayoutsModel _cycledLayoutsModel;
-    private readonly SystemSettingsWatcher _systemSettingsChangesWatcher;
-    private readonly HotKeyModelWpf _hotKeyModel;
-    private readonly SettingsInRegistry _settings;
-    
+    private readonly AppModel _appModel;
+
     public SettingsWindow SettingsWindow { get; set; }
 
     public AppRoot()
     {
         InitCheckSingleAppInstance(out _singleInstance);
 
-        InitSettings(out _settings);
-        _cycledLayoutsModel = new CycledLayoutsModel(_settings.CycledLayout);
-        InitHotKeys(_settings, _cycledLayoutsModel, out _hotKeyModel);
-        InitSystemSettingsWatcher(_cycledLayoutsModel, out _systemSettingsChangesWatcher);
-        InitSettingsWindow(_cycledLayoutsModel, _hotKeyModel);
+        InitHotKeys(out var hotKeyModel);
+        InitAppModel(hotKeyModel, out _appModel);
+        InitSettingsWindow(_appModel);
     }
 
-    [MemberNotNull(nameof(SettingsWindow))]
-    private void InitSettingsWindow(CycledLayoutsModel cycledLayoutsModel, HotKeyModelWpf hotKeyModel)
+    private static void InitCheckSingleAppInstance(out SingleInstance instance)
     {
-        var appPath = Process.GetCurrentProcess().MainModule?.FileName
-                      ?? throw new ApplicationException("Can't get app path.");
-
-        var autorunModel = new AutorunModel(AppId, appPath);
-        var settingsVm = new SettingsVm(autorunModel, cycledLayoutsModel, hotKeyModel);
-        SettingsWindow = new SettingsWindow
-        {
-            DataContext = settingsVm
-        };
-
-        SettingsWindow.IsVisibleChanged += (_, args) =>
-        {
-            if (args.NewValue is false) SaveSettings();
-        };
+        instance = new SingleInstance(AppModel.AppId);
+        instance.CheckOtherInstancesThrowException();
     }
 
-    private static void InitSystemSettingsWatcher(CycledLayoutsModel cycledLayoutsModel, out SystemSettingsWatcher watcher)
-    {
-        watcher = new SystemSettingsWatcher();
-        watcher.SystemLayoutsChanged += (_, _) => cycledLayoutsModel.CleanFromOrphanedLayouts();
-    }
-
-    private static void InitHotKeys(SettingsInRegistry settings, CycledLayoutsModel cycledLayoutsModel, out HotKeyModelWpf hotKeyModel)
+    private static void InitHotKeys(out HotKeyModelWpf hotKeyModel)
     {
         var availableCombinations = new List<KeyGesture>
         {
@@ -69,34 +41,38 @@ public class AppRoot : IDisposable
             new (Key.None, ModifierKeys.Control | ModifierKeys.Shift, "Ctrl+Shift")
         };
 
-        hotKeyModel = new HotKeyModelWpf(availableCombinations, settings.LayoutToggleHotKeyIndex);
-        hotKeyModel.HotKeyPressed += (_, _) => cycledLayoutsModel.SwitchToNextLayout();
+        hotKeyModel = new HotKeyModelWpf(availableCombinations);
         hotKeyModel.HotKeyAlreadyUsed += ShowAlreadyRegisteredHotKeyMessage;
     }
 
-    private static void InitCheckSingleAppInstance(out SingleInstance instance)
+    private static void InitAppModel(IHotKeyModel hotKeyModel, out AppModel appModel)
     {
-        instance = new SingleInstance(AppId);
-        instance.CheckOtherInstancesThrowException();
+        var appPath = Process.GetCurrentProcess().MainModule?.FileName
+                      ?? throw new ApplicationException("Can't get app path.");
+
+        appModel = new AppModel(hotKeyModel, appPath);
     }
 
-    private static void InitSettings(out SettingsInRegistry settings)
+    [MemberNotNull(nameof(SettingsWindow))]
+    private void InitSettingsWindow(AppModel appModel)
     {
-        settings = new SettingsInRegistry(AppRegistryKey);
-        settings.Load();
+        
+        var settingsVm = new SettingsVm(appModel.AutorunModel, appModel.CycledLayoutsModel, appModel.HotKeyModel);
+        SettingsWindow = new SettingsWindow
+        {
+            DataContext = settingsVm
+        };
+
+        SettingsWindow.IsVisibleChanged += (_, args) =>
+        {
+            if (args.NewValue is false) appModel.SaveSettings();
+        };
     }
 
     private static void ShowAlreadyRegisteredHotKeyMessage(object? sender, EventArgs e)
     {
         MessageBox.Show(@"Selected combination already used in other application.", 
             "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-    }
-
-    private void SaveSettings()
-    {
-        _settings.CycledLayout = _cycledLayoutsModel.CycledLayouts;
-        _settings.LayoutToggleHotKeyIndex = _hotKeyModel.HotKeyIndex;
-        _settings.Save();
     }
     
     #region Dispose
@@ -120,7 +96,7 @@ public class AppRoot : IDisposable
         if (disposing)
         {
             //dispose managed state (managed objects)
-            _systemSettingsChangesWatcher.Dispose();
+            _appModel.Dispose();
             _singleInstance.Dispose();
         }
         //free unmanaged resources (unmanaged objects) and override finalizer

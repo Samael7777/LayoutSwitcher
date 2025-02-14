@@ -3,17 +3,12 @@ using Microsoft.Win32;
 
 namespace LayoutSwitcher.Models;
 
-public class SettingsInRegistry : BaseSettings
+public class SettingsInRegistry(string appKey) : BaseSettings
 {
     private const string LayoutToggleHotKeyIndexValueName = "LayoutToggleHotKeyIndex";
     private const string CycledLayoutValueName = "CycledLayout";
     
-    private readonly string _appSubKey;
-
-    public SettingsInRegistry(string appKey)
-    {
-        _appSubKey = "Software\\" + appKey;
-    }
+    private readonly string _appSubKey = "Software\\" + appKey;
 
     public override void Load()
     {
@@ -23,9 +18,7 @@ public class SettingsInRegistry : BaseSettings
         layoutToggleHotKeyIndex = appSubKey.GetValue(LayoutToggleHotKeyIndexValueName) as int?
                                   ?? layoutToggleHotKeyIndex;
 
-        var cycledLayoutData = appSubKey.GetValue(CycledLayoutValueName) as byte[]
-                               ?? Array.Empty<byte>();
-
+        var cycledLayoutData = appSubKey.GetValue(CycledLayoutValueName) as byte[] ?? [];
         cycledLayout = BytesToUIntList(cycledLayoutData);
     }
 

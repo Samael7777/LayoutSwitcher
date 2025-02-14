@@ -34,15 +34,10 @@ public class HotKeyModelWpf : IHotKeyModel
         }
     }
     
-    public HotKeyModelWpf(IEnumerable<KeyGesture> availableCombinations, int currentIndex)
+    public HotKeyModelWpf(IEnumerable<KeyGesture> availableCombinations)
     {
         _availableCombinations = [new KeyGesture(Key.None, ModifierKeys.None, "None")];
         _availableCombinations.AddRange(availableCombinations);
-
-        if (currentIndex < 0 || currentIndex >= _availableCombinations.Count)
-            throw new ArgumentOutOfRangeException(nameof(currentIndex));
-
-        HotKeyIndex = currentIndex;
     }
 
     private void OnHotKeyPressed(object? sender, HotkeyEventArgs e)
