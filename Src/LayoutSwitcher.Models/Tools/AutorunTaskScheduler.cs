@@ -27,6 +27,8 @@ public class AutorunTaskScheduler : IAutorun
         td.Principal.LogonType = TaskLogonType.InteractiveToken;
         td.Principal.RunLevel = TaskRunLevel.Highest;
 
+        td.Settings.DisallowStartIfOnBatteries = false;
+        td.Settings.StopIfGoingOnBatteries = false;
         ts.RootFolder.RegisterTaskDefinition(appId, td);
     }
 
