@@ -1,15 +1,17 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
-
-using LayoutSwitcher.GUI.Avalonia.ViewModels;
-using LayoutSwitcher.GUI.Avalonia.Views;
+using Avalonia.Controls;
+using LayoutSwitcher.ViewModels;
 
 namespace LayoutSwitcher.GUI.Avalonia;
 
-public partial class App : Application
+public class App : Application
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+    private AppRoot _appRoot;
+#pragma warning restore CS8618 
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -17,25 +19,37 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        // Line below is needed to remove Avalonia data validation.
-        // Without this line you will get duplicate validations from both Avalonia and CT
-        BindingPlugins.DataValidators.RemoveAt(0);
-
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = new MainViewModel()
-            };
-        }
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
-        {
-            singleViewPlatform.MainView = new MainView
-            {
-                DataContext = new MainViewModel()
-            };
+            // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
+            // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
+            //DisableAvaloniaDataAnnotationValidation();
+            desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            desktop.Exit += OnExit;
+
+            _appRoot = new AppRoot();
+            
+            DataContext = new TrayViewModel(_appRoot.SettingsWindow, () => desktop.Shutdown());
         }
 
         base.OnFrameworkInitializationCompleted();
     }
+
+    private void OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+    {
+        _appRoot.Dispose();
+    }
+
+    //private static void DisableAvaloniaDataAnnotationValidation()
+    //{
+    //    // Get an array of plugins to remove
+    //    var dataValidationPluginsToRemove =
+    //        BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
+
+    //    // remove each entry found
+    //    foreach (var plugin in dataValidationPluginsToRemove)
+    //    {
+    //        BindingPlugins.DataValidators.Remove(plugin);
+    //    }
+    //}
 }

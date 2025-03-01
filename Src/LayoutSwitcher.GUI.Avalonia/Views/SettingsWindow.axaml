@@ -1,0 +1,84 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:vm="using:LayoutSwitcher.ViewModels"
+		xmlns:ctr="using:LayoutSwitcher.GUI.Avalonia.CustomControls"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="LayoutSwitcher.GUI.Avalonia.Views.SettingsWindow"
+        SizeToContent="WidthAndHeight"
+        Icon="/Assets/Keyboard.ico"
+        Title="Settings"
+        x:DataType="vm:SettingsVm"
+        x:CompileBindings="True">
+
+    <!--<Interaction.Behaviors>
+        <EventTriggerBehavior EventName="Closing">
+			<InvokeCommandAction Command="{Binding FormClosingCommand}"/>
+        </EventTriggerBehavior>
+    </Interaction.Behaviors>-->
+
+	<Grid Margin="10,5,10,5">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition MinHeight="160"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="1*" MinWidth="260"/>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="1*" MinWidth="260"/>
+		</Grid.ColumnDefinitions>
+
+		<TextBlock Grid.Column="0" Grid.Row="0" Text="Available layouts" FontSize="16" HorizontalAlignment="Center" Margin="0,5,0,5"/>
+
+		<ListBox x:Name="AvailableLayouts" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding AvailableLayouts}" BorderThickness="1" BorderBrush="Gray" MinWidth="250"/>
+
+		<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Margin="10,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+			<Button Command="{Binding AddToCyclingCommand}" CommandParameter="{Binding ElementName=AvailableLayouts, Path=SelectedIndex}" Margin="0 0 0 5">
+				<PathIcon Data="{StaticResource arrow_right_regular}" />
+            </Button>
+			<Button Command="{Binding RemoveFromCyclingCommand}" CommandParameter="{Binding ElementName=CyclingLayouts, Path=SelectedIndex}" Margin="0 5 0 0">
+                <PathIcon Data="{StaticResource arrow_left_regular}" />
+            </Button>
+		</StackPanel>
+
+		<TextBlock Grid.Column="2" Grid.Row="0" Text="Cyclic switching" FontSize="16" HorizontalAlignment="Center" Margin="0,5,0,5"/>
+
+		<ListBox x:Name="CyclingLayouts" Grid.Column="2" Grid.Row="1" ItemsSource="{Binding CycledLayouts}" BorderThickness="1" BorderBrush="Gray" MinWidth="250"/>
+
+		<StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5,0,5">
+            <Button Command="{Binding MoveUpCommand}" CommandParameter="{Binding ElementName=CyclingLayouts, Path=SelectedIndex}" Margin="5 5 0 5">
+                <PathIcon Data="{StaticResource arrow_up_regular}" />
+            </Button>
+            <Button Command="{Binding MoveDownCommand}" CommandParameter="{Binding ElementName=CyclingLayouts, Path=SelectedIndex}" Margin="5 5 0 5">
+                <PathIcon Data="{StaticResource arrow_down_regular}" />
+            </Button>
+		</StackPanel>
+
+        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+			<TextBlock Text="Autorun" FontSize="16" VerticalAlignment="Center" Margin="10 0 10 0"/>
+            <ToggleSwitch  IsChecked="{Binding Autorun}" FontSize="16" HorizontalAlignment="Left" Margin="5,5,0,5" VerticalAlignment="Top"/>
+		</StackPanel>
+
+		<StackPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,5">
+			<TextBlock Text="Current layout switch hotkey: " FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" />
+			<ComboBox x:Name="HotkeySelector" 
+                      ItemsSource="{Binding AvailableHotkeys}" 
+                      SelectedIndex="{Binding AppHotkeyIndex}" 
+                      Width="200" Margin="5,0,0,0"
+                      ctr:ComboBoxCommand.DropDownClosedCommand="{Binding SetNewAppHotkeyCommand}">
+				<!--<Interaction.Behaviors>
+					<EventTriggerBehavior EventName="DropDownClosed">
+						<InvokeCommandAction 
+                            Command="{Binding SetNewAppHotkeyCommand}" 
+                            CommandParameter="{Binding ElementName=HotkeySelector, 
+							                    Path=SelectedIndex}"/>
+					</EventTriggerBehavior>
+				</Interaction.Behaviors>-->
+			</ComboBox>
+		</StackPanel>
+
+	</Grid>
+</Window>

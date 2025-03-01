@@ -1,15 +1,18 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Windows;
-using System.Windows.Input;
-using LayoutSwitcher.Gui.WPF.Models;
-using LayoutSwitcher.Gui.WPF.Windows;
+using Avalonia.Input;
+using LayoutSwitcher.GUI.Avalonia.Models;
+using LayoutSwitcher.GUI.Avalonia.Views;
 using LayoutSwitcher.Models;
 using LayoutSwitcher.Models.Interfaces;
 using LayoutSwitcher.Models.Tools;
 using LayoutSwitcher.ViewModels;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
 
-namespace LayoutSwitcher.Gui.WPF;
+namespace LayoutSwitcher.GUI.Avalonia;
 
 public class AppRoot : IDisposable
 {
@@ -33,15 +36,15 @@ public class AppRoot : IDisposable
         instance.CheckOtherInstancesThrowException();
     }
 
-    private static void InitHotKeys(out HotKeyModelWpf hotKeyModel)
+    private void InitHotKeys(out HotKeyModel hotKeyModel)
     {
         var availableCombinations = new List<KeyGesture>
         {
-            new (Key.None, ModifierKeys.Alt | ModifierKeys.Shift, "Alt+Shift"),
-            new (Key.None, ModifierKeys.Control | ModifierKeys.Shift, "Ctrl+Shift")
+            new (Key.None, KeyModifiers.Alt | KeyModifiers.Shift),
+            new (Key.None, KeyModifiers.Control | KeyModifiers.Shift)
         };
 
-        hotKeyModel = new HotKeyModelWpf(availableCombinations);
+        hotKeyModel = new HotKeyModel(availableCombinations);
         hotKeyModel.HotKeyAlreadyUsed += ShowAlreadyRegisteredHotKeyMessage;
     }
 
@@ -63,16 +66,20 @@ public class AppRoot : IDisposable
             DataContext = settingsVm
         };
 
-        SettingsWindow.IsVisibleChanged += (_, args) =>
+        SettingsWindow.Closing += (_, _) =>
         {
-            if (args.NewValue is false) appModel.SaveSettings();
+            appModel.SaveSettings(); //todo test
         };
     }
 
-    private static void ShowAlreadyRegisteredHotKeyMessage(object? sender, EventArgs e)
+    private void ShowAlreadyRegisteredHotKeyMessage(object? sender, EventArgs e)
     {
-        MessageBox.Show(@"Selected combination already used in other application.", 
-            "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        var box = MessageBoxManager.GetMessageBoxStandard(
+            "Error",
+            "Selected combination already used in other application.",
+            ButtonEnum.Ok,
+            Icon.Error);
+        box.ShowAsPopupAsync(SettingsWindow);
     }
     
     #region Dispose

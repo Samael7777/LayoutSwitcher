@@ -1,10 +1,31 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:LayoutSwitcher.ViewModels;assembly=LayoutSwitcher.ViewModels"
              x:Class="LayoutSwitcher.GUI.Avalonia.App"
-             RequestedThemeVariant="Default">
+             x:CompileBindings="True"
+             RequestedThemeVariant="Default"
+             x:DataType="vm:TrayViewModel">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
-
+  
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="avares://LayoutSwitcher.GUI.Avalonia/Styles/Icons.axaml"/>
     </Application.Styles>
+
+	<TrayIcon.Icons>
+		<TrayIcons>
+			<TrayIcon Icon="/Assets/Keyboard.ico" 
+                      Command="{Binding SettingsCommand}"
+                      ToolTipText="Keyboard layout switcher">
+                <TrayIcon.Menu>
+					<NativeMenu>
+                        <NativeMenuItem Header="Settings" Command="{Binding SettingsCommand}"/>
+                        <NativeMenuItemSeparator />
+                        <NativeMenuItem Header="Exit" Command="{Binding ExitCommand}"/>
+                    </NativeMenu>
+                </TrayIcon.Menu>
+            </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
+
 </Application>
