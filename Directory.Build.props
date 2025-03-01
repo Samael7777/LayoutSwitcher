@@ -1,6 +1,12 @@
 <Project>
   <PropertyGroup>
     <Nullable>enable</Nullable>
+	<TargetFramework>net9.0-windows</TargetFramework>
     <AvaloniaVersion>11.1.0</AvaloniaVersion>
   </PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<OutputPath>$(SolutionDir)\Output\Release\</OutputPath>
+	</PropertyGroup>
+
 </Project>
