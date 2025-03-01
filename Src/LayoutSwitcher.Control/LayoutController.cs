@@ -20,8 +20,8 @@ public static class LayoutController
 		while (targetWindowEnumerator.MoveNext() 
 		       && target != WindowHelper.GetWindowKeyboardLayout(focusWindow))
 		{
-			var current = WindowHelper.GetWindowKeyboardLayout(focusWindow);
 #if DEBUG
+			var current = WindowHelper.GetWindowKeyboardLayout(focusWindow);
 			Debug.WriteLine($"\tFor window {focusWindow:x8}, current: {current.LayoutDisplayName}");
 #endif
 			var targetWindow = targetWindowEnumerator.Current;
