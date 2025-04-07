@@ -1,6 +1,6 @@
 ﻿using Microsoft.Win32;
 
-namespace LayoutSwitcher.Models.Tools;
+namespace LayoutSwitcher.Models.Tools.Autorun.Registry;
 
 internal class AutorunRegistry : IAutorun
 {
@@ -27,7 +27,7 @@ internal class AutorunRegistry : IAutorun
 
     private static RegistryKey GetAutorunSubKey(bool writable)
     {
-        return Registry.LocalMachine.OpenSubKey(AutorunSubKey, writable)
+        return Microsoft.Win32.Registry.LocalMachine.OpenSubKey(AutorunSubKey, writable)
                ?? throw new ApplicationException("Can't open autorun registry key.");
     }
 }

@@ -1,0 +1,6 @@
+﻿CoCreateInstance
+CoInitializeEx
+CoUninitialize
+ITaskService
+IExecAction
+TASK_CREATION

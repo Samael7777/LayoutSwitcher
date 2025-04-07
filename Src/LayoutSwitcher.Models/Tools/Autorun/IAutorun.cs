@@ -1,4 +1,4 @@
-﻿namespace LayoutSwitcher.Models.Tools;
+﻿namespace LayoutSwitcher.Models.Tools.Autorun;
 
 internal interface IAutorun
 {
