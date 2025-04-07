@@ -7,7 +7,8 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <PublishTrimmed>True</PublishTrimmed>
-    <PublishAot>True</PublishAot>
+	  <PublishAot Condition="'$(Configuration)' != 'Debug'" >true</PublishAot>
+	  <IsAotCompatible>true</IsAotCompatible>
     <ApplicationIcon>Assets\Keyboard.ico</ApplicationIcon>
   </PropertyGroup>
 

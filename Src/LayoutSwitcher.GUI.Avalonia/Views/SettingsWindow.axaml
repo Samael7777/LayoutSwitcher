@@ -12,12 +12,6 @@
         x:DataType="vm:SettingsVm"
         x:CompileBindings="True">
 
-    <!--<Interaction.Behaviors>
-        <EventTriggerBehavior EventName="Closing">
-			<InvokeCommandAction Command="{Binding FormClosingCommand}"/>
-        </EventTriggerBehavior>
-    </Interaction.Behaviors>-->
-
 	<Grid Margin="10,5,10,5">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
@@ -59,7 +53,11 @@
 
         <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
 			<TextBlock Text="Autorun" FontSize="16" VerticalAlignment="Center" Margin="10 0 10 0"/>
-            <ToggleSwitch  IsChecked="{Binding Autorun}" FontSize="16" HorizontalAlignment="Left" Margin="5,5,0,5" VerticalAlignment="Top"/>
+            <ToggleSwitch 
+                IsEnabled="{Binding AutorunControlEnabled, Mode=OneWay}" 
+                IsChecked="{Binding Autorun}" 
+                FontSize="16" 
+                HorizontalAlignment="Left" Margin="5,5,0,5" VerticalAlignment="Top"/>
 		</StackPanel>
 
 		<StackPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,5">
@@ -69,14 +67,6 @@
                       SelectedIndex="{Binding AppHotkeyIndex}" 
                       Width="200" Margin="5,0,0,0"
                       ctr:ComboBoxCommand.DropDownClosedCommand="{Binding SetNewAppHotkeyCommand}">
-				<!--<Interaction.Behaviors>
-					<EventTriggerBehavior EventName="DropDownClosed">
-						<InvokeCommandAction 
-                            Command="{Binding SetNewAppHotkeyCommand}" 
-                            CommandParameter="{Binding ElementName=HotkeySelector, 
-							                    Path=SelectedIndex}"/>
-					</EventTriggerBehavior>
-				</Interaction.Behaviors>-->
 			</ComboBox>
 		</StackPanel>
 
