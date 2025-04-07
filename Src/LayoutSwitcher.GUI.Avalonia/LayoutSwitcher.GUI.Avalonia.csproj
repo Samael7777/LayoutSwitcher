@@ -6,8 +6,8 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-    <PublishTrimmed>False</PublishTrimmed>
-    <PublishAot>False</PublishAot>
+    <PublishTrimmed>True</PublishTrimmed>
+    <PublishAot>True</PublishAot>
     <ApplicationIcon>Assets\Keyboard.ico</ApplicationIcon>
   </PropertyGroup>
 
