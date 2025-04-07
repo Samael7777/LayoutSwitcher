@@ -30,6 +30,8 @@ public partial class SettingsVm : ObservableObject
         set => _autorunModel.Autorun = value;
     }
 
+    public bool AutorunControlEnabled => AccountHelper.IsAdministrator();
+    
     public SettingsVm(AutorunModel autorunModel, CycledLayoutsModel cycledLayoutsModel,
         IHotKeyModel hotkeyModel)
     {
