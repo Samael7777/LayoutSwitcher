@@ -20,7 +20,7 @@ public class HotKeyModel : IHotKeyModel
     public event EventHandler? HotKeyPressed;
     
     public IList<string> AvailableCombinations =>
-        _availableCombinations.Select(k => k.GetGestureString())
+        _availableCombinations.Select(k => k.ToString())
             .ToList();
 
     public int HotKeyIndex
