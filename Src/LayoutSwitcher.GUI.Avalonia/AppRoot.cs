@@ -23,6 +23,7 @@ public class AppRoot : IDisposable
 
     public AppRoot()
     {
+
         InitCheckSingleAppInstance(out _singleInstance);
 
         InitHotKeys(out var hotKeyModel);

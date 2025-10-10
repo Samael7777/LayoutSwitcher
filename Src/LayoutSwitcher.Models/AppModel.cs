@@ -1,6 +1,4 @@
-﻿using LayoutSwitcher.Models.Exceptions;
-using LayoutSwitcher.Models.Interfaces;
-using LayoutSwitcher.Models.Tools;
+﻿using LayoutSwitcher.Models.Interfaces;
 
 namespace LayoutSwitcher.Models;
 
@@ -16,7 +14,7 @@ public class AppModel : IDisposable
     public CycledLayoutsModel CycledLayoutsModel { get; }
     public IHotKeyModel HotKeyModel { get; }
     public AutorunModel AutorunModel { get; }
-
+    
    
     public AppModel(IHotKeyModel hotKeyModel, string appPath)
     {
@@ -30,12 +28,6 @@ public class AppModel : IDisposable
         InitSystemSettingsWatcher(CycledLayoutsModel, out _systemSettingsChangesWatcher);
     }
     
-    private static void InitCheckSingleAppInstance(out SingleInstance instance)
-    {
-        instance = new SingleInstance(AppId);
-        instance.CheckOtherInstancesThrowException();
-    }
-
     private static void InitSettings(out SettingsInRegistry settings)
     {
         settings = new SettingsInRegistry(AppRegistryKey);
