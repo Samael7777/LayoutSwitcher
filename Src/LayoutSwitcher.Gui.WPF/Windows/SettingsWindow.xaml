@@ -31,36 +31,102 @@
             <ColumnDefinition Width="1*" MinWidth="260"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Column="0" Grid.Row="0" Text="Available layouts" HorizontalAlignment="Center" Margin="0,5,0,5"/>
+        <TextBlock Grid.Column="0" Grid.Row="0" 
+                   Text="Available layouts" 
+                   HorizontalAlignment="Center" 
+                   Margin="0,5,0,5"/>
 
-        <ListBox x:Name="AvailableLayouts" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding AvailableLayouts}" d:ItemsSource="{d:SampleData}" BorderThickness="1" BorderBrush="Gray" MinWidth="250"/>
+        <ListBox x:Name="AvailableLayouts" 
+                 Grid.Column="0" Grid.Row="1" 
+                 ItemsSource="{Binding AvailableLayouts}" 
+                 d:ItemsSource="{d:SampleData}" BorderThickness="1" 
+                 BorderBrush="Gray" MinWidth="250"/>
 
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Margin="10,0,10,0" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <controls:IconButton Command="{Binding AddToCyclingCommand}" CommandParameter="{Binding ElementName=AvailableLayouts, Path=SelectedIndex}" Width="32" Height="32" PathData="{StaticResource ArrowRight}" Foreground="Black" Margin="0,0,0,5"/>
-            <controls:IconButton Command="{Binding RemoveFromCyclingCommand}" CommandParameter="{Binding ElementName=CyclingLayouts, Path=SelectedIndex}" Width="32" Height="32" PathData="{StaticResource ArrowLeft}" Foreground="Black" Margin="0,5,0,0" Cursor=""/>
+        <StackPanel Grid.Row="1" Grid.Column="1" 
+                    Orientation="Vertical" 
+                    Margin="10,0,10,0" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center">
+            <controls:IconButton Command="{Binding AddToCyclingCommand}" 
+                                 CommandParameter="{Binding ElementName=AvailableLayouts, 
+                Path=SelectedIndex}" 
+                                 Width="32" Height="32" 
+                                 PathData="{StaticResource ArrowRight}" 
+                                 Foreground="Black" 
+                                 Margin="0,0,0,5"/>
+            <controls:IconButton Command="{Binding RemoveFromCyclingCommand}" 
+                                 CommandParameter="{Binding ElementName=CyclingLayouts, 
+                Path=SelectedIndex}" 
+                                 Width="32" Height="32" 
+                                 PathData="{StaticResource ArrowLeft}" 
+                                 Foreground="Black" 
+                                 Margin="0,5,0,0" 
+                                 Cursor=""/>
         </StackPanel>
 
-        <TextBlock Grid.Column="2" Grid.Row="0" Text="Cyclic switching" HorizontalAlignment="Center" Margin="0,5,0,5"/>
+        <TextBlock Grid.Column="2" Grid.Row="0" 
+                   Text="Cyclic switching" 
+                   HorizontalAlignment="Center" 
+                   Margin="0,5,0,5"/>
 
-        <ListBox x:Name="CyclingLayouts" Grid.Column="2" Grid.Row="1" ItemsSource="{Binding CycledLayouts}" d:ItemsSource="{d:SampleData}" BorderThickness="1" BorderBrush="Gray" MinWidth="250"/>
+        <ListBox x:Name="CyclingLayouts" 
+                 Grid.Column="2" Grid.Row="1" 
+                 ItemsSource="{Binding CycledLayouts}" 
+                 d:ItemsSource="{d:SampleData}" 
+                 BorderThickness="1" 
+                 BorderBrush="Gray" 
+                 MinWidth="250"/>
 
-        <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5,0,5">
-            <controls:IconButton Command="{Binding MoveUpCommand}" CommandParameter="{Binding ElementName=CyclingLayouts, Path=SelectedIndex}" Width="32" Height="32" PathData="{StaticResource ArrowUp}" Foreground="Black" Margin="0,0,5,0"/>
-            <controls:IconButton Command="{Binding MoveDownCommand}" CommandParameter="{Binding ElementName=CyclingLayouts, Path=SelectedIndex}" Width="32" Height="32" PathData="{StaticResource ArrowDown}" Foreground="Black" Margin="5,0,0,0" Cursor=""/>
+        <StackPanel Grid.Row="2" Grid.Column="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Top" 
+                    Margin="0,5,0,5">
+            <controls:IconButton Command="{Binding MoveUpCommand}" 
+                                 CommandParameter="{Binding ElementName=CyclingLayouts, 
+                Path=SelectedIndex}" 
+                                 Width="32" Height="32" 
+                                 PathData="{StaticResource ArrowUp}" 
+                                 Foreground="Black" 
+                                 Margin="0,0,5,0"/>
+            <controls:IconButton Command="{Binding MoveDownCommand}" 
+                                 CommandParameter="{Binding ElementName=CyclingLayouts, 
+                Path=SelectedIndex}" 
+                                 Width="32" Height="32" 
+                                 PathData="{StaticResource ArrowDown}" 
+                                 Foreground="Black" 
+                                 Margin="5,0,0,0" 
+                                 Cursor=""/>
         </StackPanel>
 
-        <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding Autorun}" Content="Enable autorun" HorizontalAlignment="Left" Margin="5,5,0,5" VerticalAlignment="Top"/>
+        <CheckBox Grid.Row="2" Grid.Column="0" 
+                  IsChecked="{Binding Autorun}" 
+                  Content="Enable autorun" 
+                  HorizontalAlignment="Left" 
+                  Margin="5,5,0,5" 
+                  VerticalAlignment="Top"/>
 
-        <StackPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,5">
-            <TextBlock Text="Current layout switch hotkey: " HorizontalAlignment="Left" VerticalAlignment="Center" />
-            <ComboBox x:Name="HotkeySelector" ItemsSource="{Binding AvailableHotkeys}" SelectedIndex="{Binding AppHotkeyIndex}" Width="200" Margin="5,0,0,0">
+        <StackPanel Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Top" 
+                    Margin="5,5,0,5">
+            <TextBlock Text="Current layout switch hotkey: " 
+                       HorizontalAlignment="Left" 
+                       VerticalAlignment="Center" />
+            <ComboBox x:Name="HotkeySelector" 
+                      ItemsSource="{Binding AvailableHotkeys}" 
+                      SelectedIndex="{Binding AppHotkeyIndex}" 
+                      Width="200" 
+                      Margin="5,0,0,0">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="DropDownClosed">
-                        <i:InvokeCommandAction Command="{Binding SetNewAppHotkeyCommand}" CommandParameter="{Binding ElementName=HotkeySelector, Path=SelectedIndex}"/>
+                        <i:InvokeCommandAction Command="{Binding SetNewAppHotkeyCommand}" 
+                                               CommandParameter="{Binding ElementName=HotkeySelector, 
+                            Path=SelectedIndex}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </ComboBox>
         </StackPanel>
-
     </Grid>
 </Window>
