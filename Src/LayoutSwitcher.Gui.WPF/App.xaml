@@ -6,8 +6,7 @@
              ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
          <ResourceDictionary>
-             <ResourceDictionary.MergedDictionaries>
-                 <ResourceDictionary Source="pack://application:,,,/PresentationFramework.Fluent;component/Themes/Fluent.xaml" />
+             <ResourceDictionary.MergedDictionaries><ResourceDictionary Source="pack://application:,,,/PresentationFramework.Fluent;component/Themes/Fluent.xaml" />
                 <ResourceDictionary Source="/ResourceDictionaries/TrayContextMenu.xaml"/>
                 <ResourceDictionary Source="/ResourceDictionaries/Icons.xaml"/>
                 <ResourceDictionary Source="Themes/IconButtonTheme.xaml"/>
