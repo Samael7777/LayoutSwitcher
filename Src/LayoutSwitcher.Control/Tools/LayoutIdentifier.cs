@@ -1,11 +1,10 @@
 ﻿using System.Globalization;
 using Microsoft.Win32;
 
-// ReSharper disable IdentifierTypo
-// ReSharper disable InconsistentNaming
-
 namespace LayoutSwitcher.Control.Tools;
 
+// ReSharper disable once InconsistentNaming
+// ReSharper disable once IdentifierTypo
 internal record LayoutDescriptor(int KLID, string DisplayNameResource,
     string LayoutDisplayName, string LayoutText);
 
@@ -14,20 +13,20 @@ internal static class LayoutIdentifier
     private record StringResource(string LibFilename, uint ResourceId);
 
 
-    private static readonly Dictionary<ushort, LayoutDescriptor> Cache;
-    private static readonly Dictionary<string, DllResourceReader> ResourceReaders;
+    private static readonly Dictionary<ushort, LayoutDescriptor> s_Cache;
+    private static readonly Dictionary<string, DllResourceReader> s_ResourceReaders;
 
     static LayoutIdentifier()
     {
-        Cache = new Dictionary<ushort, LayoutDescriptor>();
-        ResourceReaders = new Dictionary<string, DllResourceReader>();
-        InitCache();
-        DisposeResourceReaders();
+        s_Cache = new Dictionary<ushort, LayoutDescriptor>();
+        s_ResourceReaders = new Dictionary<string, DllResourceReader>();
+        try { InitCache(); }
+        finally { DisposeResourceReaders(); }
     }
 
     public static LayoutDescriptor GetKeyboardLayout(ushort keyboardId)
     {
-        Cache.TryGetValue((ushort)(keyboardId & 0x0FFF), out var descriptor);
+        s_Cache.TryGetValue((ushort)(keyboardId & 0x0FFF), out var descriptor);
         
         return descriptor 
                ?? throw new ApplicationException($"System doesn't contain layout 0x{keyboardId:X8}");
@@ -59,7 +58,7 @@ internal static class LayoutIdentifier
             var layoutDescriptor = new LayoutDescriptor(klId, displayNameResource,
                 layoutDisplayName, layoutText);
 
-            Cache.TryAdd((ushort)layoutKey, layoutDescriptor);
+            s_Cache.TryAdd((ushort)layoutKey, layoutDescriptor);
         }
     }
 
@@ -83,12 +82,13 @@ internal static class LayoutIdentifier
 
         var (libFilename, resourceId) = ParseResourcePath(resourceString);
         var libName = Path.GetFileName(libFilename).ToLower();
-        if (ResourceReaders.TryGetValue(libName, out var reader))
-            return reader.ReadStringResource(resourceId);
 
-        reader = new DllResourceReader(libFilename);
-        ResourceReaders.Add(libName, reader);
-
+        if (!s_ResourceReaders.TryGetValue(libName, out var reader))
+        {
+            reader = new DllResourceReader(libFilename);
+            s_ResourceReaders.Add(libName, reader);
+        }
+        
         return reader.ReadStringResource(resourceId);
     }
 
@@ -109,10 +109,10 @@ internal static class LayoutIdentifier
 
     private static void DisposeResourceReaders()
     {
-        foreach (var reader in ResourceReaders.Values)
+        foreach (var reader in s_ResourceReaders.Values)
         {
             reader.Dispose();
         }
-        ResourceReaders.Clear();
+        s_ResourceReaders.Clear();
     }
 }

@@ -6,6 +6,7 @@ namespace LayoutSwitcher.Control.Tools;
 internal class DllResourceReader : IDisposable
 {
     private readonly FreeLibrarySafeHandle _libraryHandle;
+
     public DllResourceReader(string filename)
     {
         _libraryHandle = WinApi.LoadLibraryEx(filename, LOAD_LIBRARY_FLAGS.LOAD_LIBRARY_AS_DATAFILE);
