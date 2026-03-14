@@ -1,0 +1,15 @@
+﻿WM_INPUTLANGCHANGEREQUEST
+LoadLibraryExW
+FreeLibrary
+CloseHandle
+GetKeyboardLayoutList
+GetKeyboardLayout
+LoadStringW
+GetForegroundWindow
+GetWindowThreadProcessId
+GetCurrentThreadId
+GetGUIThreadInfo
+SendMessage
+LoadKeyboardLayout
+ActivateKeyboardLayout
+AttachThreadInput

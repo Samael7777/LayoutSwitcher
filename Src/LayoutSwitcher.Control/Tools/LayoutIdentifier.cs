@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using LayoutSwitcher.Control.PInvoke;
 using Microsoft.Win32;
 
 // ReSharper disable IdentifierTypo
@@ -12,7 +11,7 @@ internal record LayoutDescriptor(int KLID, string DisplayNameResource,
 
 internal static class LayoutIdentifier
 {
-    private record StringResource(string LibFilename, int ResourceId);
+    private record StringResource(string LibFilename, uint ResourceId);
 
 
     private static readonly Dictionary<ushort, LayoutDescriptor> Cache;
@@ -29,10 +28,9 @@ internal static class LayoutIdentifier
     public static LayoutDescriptor GetKeyboardLayout(ushort keyboardId)
     {
         Cache.TryGetValue((ushort)(keyboardId & 0x0FFF), out var descriptor);
-        if (descriptor == null)
-            throw new ApplicationException($"System doesn't contain layout 0x{keyboardId:X8}");
-
-        return descriptor;
+        
+        return descriptor 
+               ?? throw new ApplicationException($"System doesn't contain layout 0x{keyboardId:X8}");
     }
 
     private static void InitCache()
@@ -106,7 +104,7 @@ internal static class LayoutIdentifier
         var pathString = Environment.ExpandEnvironmentVariables(parts[0].TrimStart('@'));
         var idString = parts[1].TrimStart('-');
 
-        return new StringResource(pathString, int.Parse(idString));
+        return new StringResource(pathString, uint.Parse(idString));
     }
 
     private static void DisposeResourceReaders()

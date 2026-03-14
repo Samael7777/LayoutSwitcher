@@ -76,12 +76,11 @@ public class KeyboardLayout : IEquatable<KeyboardLayout>
 
     [JsonIgnore] public bool IsImeLayout => (KeyboardId & 0xF000) > 0;
 
-    public override string ToString() => Hkl.ToString("x8");
+    public override string ToString() => Hkl.ToString("X8");
 
     public static KeyboardLayout GetLayout(uint hkl)
     {
-        if (hkl == 0)
-            throw new ArgumentOutOfRangeException(nameof(hkl));
+        ArgumentOutOfRangeException.ThrowIfZero(hkl);
 
         if(Cache.TryGetValue(hkl, out var layout))
             return layout;

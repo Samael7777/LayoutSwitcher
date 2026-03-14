@@ -1,27 +1,32 @@
-﻿using System.Text;
+﻿using Windows.Win32;
+using Windows.Win32.System.LibraryLoader;
 
-namespace LayoutSwitcher.Control.PInvoke;
+namespace LayoutSwitcher.Control.Tools;
 
 internal class DllResourceReader : IDisposable
 {
-    private readonly SafeLibraryHandle _libraryHandle;
+    private readonly FreeLibrarySafeHandle _libraryHandle;
     public DllResourceReader(string filename)
     {
-        _libraryHandle = Kernel32.LoadLibraryExW(filename, IntPtr.Zero, Kernel32.LOAD_LIBRARY_AS_DATAFILE);
+        _libraryHandle = WinApi.LoadLibraryEx(filename, LOAD_LIBRARY_FLAGS.LOAD_LIBRARY_AS_DATAFILE);
         if (_libraryHandle.IsInvalid)
             throw new ApplicationException($"Error loading {filename}.");
     }
 
-    public string ReadStringResource(int id)
+    public unsafe string ReadStringResource(uint id)
     {
-        var stringLength = User32.LoadString(_libraryHandle, id, new StringBuilder(8), 0);
+        Span<char> buffer = stackalloc char[8];
+
+        var stringLength = WinApi.LoadString(_libraryHandle, id, buffer, 0);
         if (stringLength == 0)
             throw new ArgumentException($"Resource {id} not found.");
+        
         stringLength++; //Considering ending Null char
-        var buffer = new StringBuilder(stringLength);
-        _ = User32.LoadString(_libraryHandle, id, buffer, stringLength);
+        buffer = stackalloc char[stringLength];
+        
+        _ = WinApi.LoadString(_libraryHandle, id, buffer, stringLength);
 
-        return buffer.ToString();
+        return new string(buffer);
     }
 
     #region Dispose

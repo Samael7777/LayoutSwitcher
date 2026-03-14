@@ -1,54 +1,71 @@
 ﻿//Used information from https://www.autohotkey.com/boards/viewtopic.php?t=84140
 
 
-using LayoutSwitcher.Control.PInvoke;
-#if DEBUG
-using System.Diagnostics;
-#endif
+using System.Runtime.InteropServices;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.Input.KeyboardAndMouse;
+using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace LayoutSwitcher.Control;
 
-public static class LayoutController
+public static unsafe class LayoutController
 {
-	public static void ChangeLayoutOnForegroundWindow(KeyboardLayout target)
+    public static void ChangeLayoutOnForegroundWindow(KeyboardLayout target)
 	{
-		var focusWindow = WindowHelper.GetForegroundFocusedWnd();
-		var targetWindowEnumerator = WindowHelper.GetFocusedImeAncestorWindow(focusWindow);
-#if DEBUG
-		Debug.WriteLine($"Try to set layout {target.LayoutDisplayName}");
-#endif
-		while (targetWindowEnumerator.MoveNext() 
-		       && target != WindowHelper.GetWindowKeyboardLayout(focusWindow))
-		{
-#if DEBUG
-			var current = WindowHelper.GetWindowKeyboardLayout(focusWindow);
-			Debug.WriteLine($"\tFor window {focusWindow:x8}, current: {current.LayoutDisplayName}");
-#endif
-			var targetWindow = targetWindowEnumerator.Current;
-			WindowHelper.PostChangeLayoutRequest(targetWindow, target);
+        //_profiles->ChangeCurrentLanguage(target.LanguageId);
+        
+        var focusWindow = GetFocusedWindow();
+        
+        var currentThreadId = WinApi.GetCurrentThreadId();
+        var foregroundThread = WinApi.GetWindowThreadProcessId(focusWindow, out _);
 
-			Thread.Sleep(10); //Pause to set new layout
-		}
+        var attached = currentThreadId != foregroundThread
+            && WinApi.AttachThreadInput(currentThreadId, foregroundThread, true);
+        
+        try
+        {
+            WinApi.ActivateKeyboardLayout((HKL)target.Hkl, ACTIVATE_KEYBOARD_LAYOUT_FLAGS.KLF_SETFORPROCESS);
+            if(!focusWindow.IsNull)
+                WinApi.SendMessage(focusWindow, WinApi.WM_INPUTLANGCHANGEREQUEST, 0, (nint)target.Hkl);
+        }
+        finally
+        {
+            if (attached)
+                WinApi.AttachThreadInput(currentThreadId, foregroundThread, false);
+        }
 	}
 
     public static IEnumerable<KeyboardLayout> GetSystemLayouts()
     {
-        var count = User32.GetKeyboardLayoutList(0, null);
-        var rawLayouts = new IntPtr[count];
-        _ = User32.GetKeyboardLayoutList(count, rawLayouts);
-        return rawLayouts.Select(hkl=> KeyboardLayout.GetLayout((uint)hkl));
+        var count = WinApi.GetKeyboardLayoutList(0);
+        var rawLayouts = new HKL[count];
+        _ = WinApi.GetKeyboardLayoutList(rawLayouts);
+
+        return rawLayouts.Select(hkl=> KeyboardLayout.GetLayout((uint)hkl.Value));
     }
     
     public static KeyboardLayout GetForegroundWindowLayout()
     {
-        var foregroundWindow = User32.GetForegroundWindow();
-        var foregroundThreadId = User32.GetWindowThreadProcessId(foregroundWindow, out _);
-        return GetThreadKeyboardLayout(foregroundThreadId);
+        var foregroundWindow = GetFocusedWindow();
+        var foregroundThreadId = WinApi.GetWindowThreadProcessId(foregroundWindow, out _);
+        var hkl = WinApi.GetKeyboardLayout(foregroundThreadId);
+        
+        return KeyboardLayout.GetLayout((uint)hkl.Value);
     }
 
-    public static KeyboardLayout GetThreadKeyboardLayout(uint threadId = 0)
+    private static HWND GetFocusedWindow()
     {
-        var hkl = User32.GetKeyboardLayout(threadId);
-        return KeyboardLayout.GetLayout(hkl);
+        var foregroundWindow = WinApi.GetForegroundWindow();
+        var foregroundThreadId = WinApi.GetWindowThreadProcessId(foregroundWindow, out _);
+        var gui = new GUITHREADINFO
+        {
+            cbSize = (uint)Marshal.SizeOf<GUITHREADINFO>(),
+        };
+        
+        if (WinApi.GetGUIThreadInfo(foregroundThreadId, ref gui) && !gui.hwndFocus.IsNull)
+            return gui.hwndFocus;
+        
+        return foregroundWindow;
     }
 }
