@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <Nullable>enable</Nullable>
-	<TargetFramework>net9.0-windows</TargetFramework>
+	<TargetFramework>net10.0-windows</TargetFramework>
 	  <RollForward>LatestMajor</RollForward>
   </PropertyGroup>
 
