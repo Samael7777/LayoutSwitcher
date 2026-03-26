@@ -1,7 +1,4 @@
-﻿//Used information from https://www.autohotkey.com/boards/viewtopic.php?t=84140
-
-
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.Input.KeyboardAndMouse;
@@ -12,29 +9,21 @@ namespace LayoutSwitcher.Control;
 public static unsafe class LayoutController
 {
     public static void ChangeLayoutOnForegroundWindow(KeyboardLayout target)
-	{
-        //_profiles->ChangeCurrentLanguage(target.LanguageId);
+    {
+        var hkl = LoadLayout(target.KLID);
+        ActivateLayout(hkl);
         
-        var focusWindow = GetFocusedWindow();
-        
-        var currentThreadId = WinApi.GetCurrentThreadId();
-        var foregroundThread = WinApi.GetWindowThreadProcessId(focusWindow, out _);
+        var tries = 0;
+        while (tries <= 10 && GetForegroundWindowLayout() != target)
+        {
+            var focusWindow = GetFocusedWindow();
+            if (focusWindow.IsNull) 
+                break;
 
-        var attached = currentThreadId != foregroundThread
-            && WinApi.AttachThreadInput(currentThreadId, foregroundThread, true);
-        
-        try
-        {
-            WinApi.ActivateKeyboardLayout((HKL)target.Hkl, ACTIVATE_KEYBOARD_LAYOUT_FLAGS.KLF_SETFORPROCESS);
-            if(!focusWindow.IsNull)
-                WinApi.SendMessage(focusWindow, WinApi.WM_INPUTLANGCHANGEREQUEST, 0, (nint)target.Hkl);
+            SendChangeLayoutMessage(focusWindow, hkl);
+            tries++;
         }
-        finally
-        {
-            if (attached)
-                WinApi.AttachThreadInput(currentThreadId, foregroundThread, false);
-        }
-	}
+    }
 
     public static IEnumerable<KeyboardLayout> GetSystemLayouts()
     {
@@ -67,5 +56,28 @@ public static unsafe class LayoutController
             return gui.hwndFocus;
         
         return foregroundWindow;
+    }
+
+    private static HKL LoadLayout(uint klId)
+    {
+        var klIdStr = $"{klId:x8}";
+        HKL hkl;
+        fixed(char* klIdPtr = klIdStr)
+        {
+            hkl = WinApi.LoadKeyboardLayout(klIdPtr, ACTIVATE_KEYBOARD_LAYOUT_FLAGS.KLF_ACTIVATE);
+        }
+
+        return hkl;
+    }
+
+    private static void ActivateLayout(HKL hkl)
+    {
+        WinApi.ActivateKeyboardLayout(hkl, ACTIVATE_KEYBOARD_LAYOUT_FLAGS.KLF_SETFORPROCESS);
+    }
+
+    private static void SendChangeLayoutMessage(HWND window, HKL hkl)
+    {
+        WinApi.PostMessage(window, WinApi.WM_INPUTLANGCHANGEREQUEST, 0, (nint)hkl);
+        Task.Delay(10).Wait();
     }
 }

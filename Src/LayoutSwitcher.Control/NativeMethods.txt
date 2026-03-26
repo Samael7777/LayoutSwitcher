@@ -9,7 +9,7 @@ GetForegroundWindow
 GetWindowThreadProcessId
 GetCurrentThreadId
 GetGUIThreadInfo
+PostMessage
 SendMessage
 LoadKeyboardLayout
 ActivateKeyboardLayout
-AttachThreadInput

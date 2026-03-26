@@ -22,6 +22,8 @@ public partial class CycledLayoutsModel : ObservableObject
         _lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
         _cycledLayouts = new ObservableCollection<KeyboardLayout>(cycledLayouts);
         _cycledLayouts.CollectionChanged += (_, _) => OnPropertyChanged(nameof(CycledLayouts));
+
+        var av = AvailableLayouts;
     }
 
     public void SwitchToNextLayout()
