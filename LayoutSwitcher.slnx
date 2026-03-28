@@ -1,0 +1,15 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Элементы решения/">
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Project Path="Src/LayoutSwitcher.Control/LayoutSwitcher.Control.csproj" />
+  <Project Path="Src/LayoutSwitcher.GUI.Avalonia/LayoutSwitcher.GUI.Avalonia.csproj" />
+  <Project Path="Src/LayoutSwitcher.Gui.WPF/LayoutSwitcher.Gui.WPF.csproj" />
+  <Project Path="Src/LayoutSwitcher.Models/LayoutSwitcher.Models.csproj" />
+  <Project Path="Src/LayoutSwitcher.ViewModels/LayoutSwitcher.ViewModels.csproj" />
+</Solution>
