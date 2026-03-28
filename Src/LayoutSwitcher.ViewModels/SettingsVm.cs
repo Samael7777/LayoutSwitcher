@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Immutable;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LayoutSwitcher.Models;
@@ -13,16 +13,10 @@ public partial class SettingsVm : ObservableObject
     private readonly IHotKeyModel _hotkeyModel;
 
     [ObservableProperty] private int _appHotkeyIndex;
-
-    public List<string> AvailableLayouts => _cycledLayoutsModel.AvailableLayouts
-        .Select(l=>l.LayoutDisplayName)
-        .ToList();
-
-    public List<string> CycledLayouts => _cycledLayoutsModel.CycledLayouts
-        .Select(l=>l.LayoutDisplayName)
-        .ToList();
-
-    public List<string> AvailableHotkeys => _hotkeyModel.AvailableCombinations.ToList();
+    [ObservableProperty] private IReadOnlyList<string> _availableLayouts = [];
+    [ObservableProperty] private IReadOnlyList<string> _cycledLayouts = [];
+    
+    public IReadOnlyList<string> AvailableHotkeys => _hotkeyModel.AvailableCombinations;
 
     public bool Autorun
     {
@@ -39,7 +33,10 @@ public partial class SettingsVm : ObservableObject
         _cycledLayoutsModel = cycledLayoutsModel;
         _hotkeyModel = hotkeyModel;
         AppHotkeyIndex = _hotkeyModel.HotKeyIndex;
-        _cycledLayoutsModel.PropertyChanged += OnLayoutModelChanged;
+
+        _cycledLayoutsModel.CycledLayouts.CollectionChanged += (_, _) => UpdateLayoutsLists();
+
+        UpdateLayoutsLists();
     }
 
     #region Relay commands
@@ -57,15 +54,13 @@ public partial class SettingsVm : ObservableObject
     [RelayCommand]
     private void AddToCycling(int index)
     {
-        var layout = _cycledLayoutsModel.AvailableLayouts[index];
-        _cycledLayoutsModel.AddToCycling(layout);
+        _cycledLayoutsModel.AddToCyclingFromAvailableIndex(index);
     }
 
     [RelayCommand]
     private void RemoveFromCycling(int index)
     {
-        var layout = _cycledLayoutsModel.CycledLayouts[index];
-        _cycledLayoutsModel.RemoveFromCycling(layout);
+        _cycledLayoutsModel.RemoveFromCycling(index);
     }
 
     [RelayCommand]
@@ -85,18 +80,15 @@ public partial class SettingsVm : ObservableObject
     {
         //todo ???
     }
-
-
-    #endregion
     
-    private void OnLayoutModelChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        var property = e.PropertyName;
-        
-        if (property is not (nameof(_cycledLayoutsModel.CycledLayouts)
-            or nameof(_cycledLayoutsModel.AvailableLayouts))) return;
+    #endregion
 
-        OnPropertyChanged(nameof(AvailableLayouts));
-        OnPropertyChanged(nameof(CycledLayouts));
+    private void UpdateLayoutsLists()
+    {
+        AvailableLayouts = _cycledLayoutsModel.AvailableLayouts
+            .Select(l => l.LayoutDisplayName).ToImmutableList();
+        
+        CycledLayouts = _cycledLayoutsModel.CycledLayouts
+            .Select(l => l.LayoutDisplayName).ToImmutableList();
     }
 }

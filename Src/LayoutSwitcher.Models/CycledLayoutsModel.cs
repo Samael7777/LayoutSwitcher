@@ -22,8 +22,6 @@ public partial class CycledLayoutsModel : ObservableObject
         _lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
         _cycledLayouts = new ObservableCollection<KeyboardLayout>(cycledLayouts);
         _cycledLayouts.CollectionChanged += (_, _) => OnPropertyChanged(nameof(CycledLayouts));
-
-        var av = AvailableLayouts;
     }
 
     public void SwitchToNextLayout()
@@ -33,11 +31,15 @@ public partial class CycledLayoutsModel : ObservableObject
         LayoutController.ChangeLayoutOnForegroundWindow(nextLayout);
     }
     
-    public void AddToCycling(KeyboardLayout layout)
+    public void AddToCyclingFromAvailableIndex(int index)
     {
+        if (index < 0 || index >= AvailableLayouts.Length)
+            return;
+
         _lock.EnterWriteLock();
         try
         {
+            var layout = AvailableLayouts[index];
             CycledLayouts.Add(layout);
         }
         finally
@@ -46,12 +48,15 @@ public partial class CycledLayoutsModel : ObservableObject
         }
     }
 
-    public void RemoveFromCycling(KeyboardLayout layout)
+    public void RemoveFromCycling(int index)
     {
         _lock.EnterWriteLock();
         try
-        {   if (CycledLayouts.Contains(layout))
-                CycledLayouts.Remove(layout);
+        {
+            if (index < 0 || index >= CycledLayouts.Count)
+                return;
+
+            CycledLayouts.RemoveAt(index);
         }
         finally
         {

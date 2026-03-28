@@ -11,17 +11,13 @@ namespace LayoutSwitcher.GUI.Avalonia.Models;
 public class HotKeyModel : IHotKeyModel
 {
     private const string GestureName = "SwitchLayout";
-
     private readonly List<KeyGesture> _availableCombinations;
-
     private int _hotKeyIndex;
 
     public event EventHandler? HotKeyAlreadyUsed;
     public event EventHandler? HotKeyPressed;
     
-    public IList<string> AvailableCombinations =>
-        _availableCombinations.Select(k => k.ToString())
-            .ToList();
+    public IReadOnlyList<string> AvailableCombinations { get; }
 
     public int HotKeyIndex
     {
@@ -40,6 +36,10 @@ public class HotKeyModel : IHotKeyModel
     {
         _availableCombinations = [new KeyGesture(Key.None)];
         _availableCombinations.AddRange(availableCombinations);
+
+        AvailableCombinations = _availableCombinations
+            .Select(k=>k.ToString()).ToList();
+
     }
 
     private void OnHotKeyPressed(object? sender, HotkeyEventArgs e)

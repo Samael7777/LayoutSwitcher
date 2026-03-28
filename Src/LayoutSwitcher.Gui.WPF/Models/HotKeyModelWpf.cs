@@ -17,7 +17,7 @@ public class HotKeyModelWpf : IHotKeyModel
     public event EventHandler? HotKeyAlreadyUsed;
     public event EventHandler? HotKeyPressed;
     
-    public IList<string> AvailableCombinations =>
+    public IReadOnlyList<string> AvailableCombinations =>
         _availableCombinations.Select(k => k.GetDisplayStringForCulture(CultureInfo.InvariantCulture))
             .ToList();
 
