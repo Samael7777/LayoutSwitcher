@@ -17,12 +17,12 @@ public static unsafe class LayoutController
         while (tries <= 10 && GetForegroundWindowLayout() != target)
         {
             var focusWindow = GetFocusedWindow();
-            if (focusWindow.IsNull) 
+            if (focusWindow.IsNull)
                 break;
 
             SendChangeLayoutMessage(focusWindow, hkl);
             tries++;
-        }
+        } 
     }
 
     public static IEnumerable<KeyboardLayout> GetSystemLayouts()
@@ -61,13 +61,10 @@ public static unsafe class LayoutController
     private static HKL LoadLayout(uint klId)
     {
         var klIdStr = $"{klId:x8}";
-        HKL hkl;
         fixed(char* klIdPtr = klIdStr)
         {
-            hkl = WinApi.LoadKeyboardLayout(klIdPtr, ACTIVATE_KEYBOARD_LAYOUT_FLAGS.KLF_ACTIVATE);
+            return WinApi.LoadKeyboardLayout(klIdPtr, ACTIVATE_KEYBOARD_LAYOUT_FLAGS.KLF_ACTIVATE);
         }
-
-        return hkl;
     }
 
     private static void ActivateLayout(HKL hkl)
