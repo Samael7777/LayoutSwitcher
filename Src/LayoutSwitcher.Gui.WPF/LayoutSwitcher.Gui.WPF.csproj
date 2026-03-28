@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LayoutSwitcher.Models\LayoutSwitcher.Models.csproj" />
-    <ProjectReference Include="..\LayoutSwitcher.ViewModels\LayoutSwitcher.ViewModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>

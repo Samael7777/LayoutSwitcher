@@ -11,5 +11,4 @@
   <Project Path="Src/LayoutSwitcher.GUI.Avalonia/LayoutSwitcher.GUI.Avalonia.csproj" />
   <Project Path="Src/LayoutSwitcher.Gui.WPF/LayoutSwitcher.Gui.WPF.csproj" />
   <Project Path="Src/LayoutSwitcher.Models/LayoutSwitcher.Models.csproj" />
-  <Project Path="Src/LayoutSwitcher.ViewModels/LayoutSwitcher.ViewModels.csproj" />
 </Solution>

@@ -1,7 +1,7 @@
 using System;
 using Avalonia.Controls;
 using LayoutSwitcher.GUI.Avalonia.CustomControls;
-using LayoutSwitcher.ViewModels.Interfaces;
+using LayoutSwitcher.Models;
 
 namespace LayoutSwitcher.GUI.Avalonia.Views;
 
@@ -10,7 +10,6 @@ public partial class SettingsWindow : Window, ISettingsWindow
     public SettingsWindow()
     {
         InitializeComponent();
-
         HotkeySelector.DropDownClosed += OnDropDownClosed;
     }
 
@@ -20,7 +19,7 @@ public partial class SettingsWindow : Window, ISettingsWindow
 
         var index = cb.SelectedIndex;
         var command = cb.GetValue(ComboBoxCommand.DropDownClosedCommandProperty);
-        if (command == null || !command.CanExecute(index)) return;
+        if (!command.CanExecute(index)) return;
 
         command.Execute(index);
     }

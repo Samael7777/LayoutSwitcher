@@ -2,14 +2,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:vm="using:LayoutSwitcher.ViewModels"
-		xmlns:ctr="using:LayoutSwitcher.GUI.Avalonia.CustomControls"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:ctr="using:LayoutSwitcher.GUI.Avalonia.CustomControls"
+		xmlns:viewModels="clr-namespace:LayoutSwitcher.Models.ViewModels;assembly=LayoutSwitcher.Models"
+		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="LayoutSwitcher.GUI.Avalonia.Views.SettingsWindow"
         SizeToContent="WidthAndHeight"
         Icon="/Assets/Keyboard.ico"
         Title="Settings"
-        x:DataType="vm:SettingsVm"
+        x:DataType="viewModels:SettingsVm"
         x:CompileBindings="True">
 
 	<Grid Margin="10,5,10,5">

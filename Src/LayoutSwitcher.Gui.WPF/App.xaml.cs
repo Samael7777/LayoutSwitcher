@@ -2,8 +2,10 @@
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification;
+using LayoutSwitcher.Gui.WPF.Windows;
 using LayoutSwitcher.Models.Exceptions;
-using LayoutSwitcher.ViewModels;
+using LayoutSwitcher.Models.ViewModels;
+
 
 namespace LayoutSwitcher.Gui.WPF;
 
@@ -13,7 +15,7 @@ namespace LayoutSwitcher.Gui.WPF;
 public partial class App
 {
     private readonly TaskbarIcon _taskbarIcon;
-    private readonly AppRoot _appRoot;
+    private readonly AppRoot<SettingsWindow> _appRoot;
     
     public App()
     {
@@ -22,8 +24,8 @@ public partial class App
 
         InitializeComponent();
 
-        _appRoot = new AppRoot();
-        var trayViewModel = new TrayViewModel(_appRoot.SettingsWindow, Current.Shutdown);
+        _appRoot = new AppRoot<SettingsWindow>();
+        var trayViewModel = new TrayViewModel(_appRoot.ShowSettingsWindow, Current.Shutdown);
         _taskbarIcon = new TaskbarIcon
         {
             Icon = WPF.Resources.Keyboard,

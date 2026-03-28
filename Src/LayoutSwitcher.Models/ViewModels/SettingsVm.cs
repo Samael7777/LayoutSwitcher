@@ -1,16 +1,17 @@
 ﻿using System.Collections.Immutable;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using LayoutSwitcher.Models;
 using LayoutSwitcher.Models.Interfaces;
+using LayoutSwitcher.Models.Models;
+using LayoutSwitcher.Models.Tools;
 
-namespace LayoutSwitcher.ViewModels;
+namespace LayoutSwitcher.Models.ViewModels;
 
 public partial class SettingsVm : ObservableObject
 {
-    private readonly CycledLayoutsModel _cycledLayoutsModel;
     private readonly AutorunModel _autorunModel;
     private readonly IHotKeyModel _hotkeyModel;
+    private readonly Models.CycledLayoutsModel _cycledLayoutsModel;
 
     [ObservableProperty] private int _appHotkeyIndex;
     [ObservableProperty] private IReadOnlyList<string> _availableLayouts = [];
@@ -26,15 +27,15 @@ public partial class SettingsVm : ObservableObject
 
     public bool AutorunControlEnabled => AccountHelper.IsAdministrator();
     
-    public SettingsVm(AutorunModel autorunModel, CycledLayoutsModel cycledLayoutsModel,
-        IHotKeyModel hotkeyModel)
+    public SettingsVm(AppModel appModel)
     {
-        _autorunModel = autorunModel;
-        _cycledLayoutsModel = cycledLayoutsModel;
-        _hotkeyModel = hotkeyModel;
-        AppHotkeyIndex = _hotkeyModel.HotKeyIndex;
-
-        _cycledLayoutsModel.CycledLayouts.CollectionChanged += (_, _) => UpdateLayoutsLists();
+        _autorunModel = appModel.AutorunModel;
+        _cycledLayoutsModel = appModel.CycledLayoutsModel;
+        _hotkeyModel = appModel.HotKeyModel;
+        
+        AppHotkeyIndex =_hotkeyModel.HotKeyIndex;
+        _cycledLayoutsModel.CycledLayouts.CollectionChanged += 
+            (_, _) => UpdateLayoutsLists();
 
         UpdateLayoutsLists();
     }

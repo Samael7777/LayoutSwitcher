@@ -1,6 +1,6 @@
 ﻿using System.Security.Principal;
 
-namespace LayoutSwitcher.ViewModels;
+namespace LayoutSwitcher.Models.Tools;
 
 public static class AccountHelper
 {

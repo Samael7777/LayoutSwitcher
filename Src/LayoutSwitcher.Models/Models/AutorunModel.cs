@@ -1,7 +1,7 @@
 ﻿using LayoutSwitcher.Models.Tools.Autorun;
 using LayoutSwitcher.Models.Tools.Autorun.TaskScheduler;
 
-namespace LayoutSwitcher.Models;
+namespace LayoutSwitcher.Models.Models;
 
 public class AutorunModel(string appId, string appPath)
 {

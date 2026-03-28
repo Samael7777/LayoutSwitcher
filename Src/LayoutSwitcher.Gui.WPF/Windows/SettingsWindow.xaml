@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:controls="clr-namespace:LayoutSwitcher.Gui.WPF.Controls"
-        xmlns:viewModels="clr-namespace:LayoutSwitcher.ViewModels;assembly=LayoutSwitcher.ViewModels"
+        xmlns:viewModels="clr-namespace:LayoutSwitcher.Models.ViewModels;assembly=LayoutSwitcher.Models"
         mc:Ignorable="d"
         SizeToContent="WidthAndHeight"
         Icon="../Resources/Keyboard.ico"

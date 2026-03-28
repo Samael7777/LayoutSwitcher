@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
-using LayoutSwitcher.ViewModels.Interfaces;
+using LayoutSwitcher.Models;
+
 
 namespace LayoutSwitcher.Gui.WPF.Windows;
 

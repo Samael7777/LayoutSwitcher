@@ -2,14 +2,15 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Controls;
-using LayoutSwitcher.ViewModels;
+using LayoutSwitcher.GUI.Avalonia.Views;
+using LayoutSwitcher.Models.ViewModels;
 
 namespace LayoutSwitcher.GUI.Avalonia;
 
 public class App : Application
 {
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-    private AppRoot _appRoot;
+    private AppRoot<SettingsWindow> _appRoot;
 #pragma warning restore CS8618 
 
     public override void Initialize()
@@ -27,9 +28,9 @@ public class App : Application
             desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             desktop.Exit += OnExit;
 
-            _appRoot = new AppRoot();
+            _appRoot = new AppRoot<SettingsWindow>();
             
-            DataContext = new TrayViewModel(_appRoot.SettingsWindow, () => desktop.Shutdown());
+            DataContext = new TrayViewModel(_appRoot.ShowSettingsWindow, () => desktop.Shutdown());
         }
 
         base.OnFrameworkInitializationCompleted();

@@ -1,15 +1,19 @@
-﻿using LayoutSwitcher.Models.Interfaces;
+﻿using System.Collections.Concurrent;
+using LayoutSwitcher.Models.Interfaces;
 
-namespace LayoutSwitcher.Models;
+namespace LayoutSwitcher.Models.Models;
 
 public class AppModel : IDisposable
 {
+   
     private const string AppRegistryKey = @"Vadim Kutin\Layout Switcher";
 
     public const string AppId = "LayoutSwitcher";
 
+    
     private readonly SystemSettingsWatcher _systemSettingsChangesWatcher;
     private readonly SettingsInRegistry _settings;
+    
 
     public CycledLayoutsModel CycledLayoutsModel { get; }
     public IHotKeyModel HotKeyModel { get; }
@@ -22,12 +26,10 @@ public class AppModel : IDisposable
         AutorunModel = new AutorunModel(AppId, appPath);
         InitSettings(out _settings);
         CycledLayoutsModel = new CycledLayoutsModel(_settings.CycledLayout);
-
         SetupHotkeys(hotKeyModel, _settings, CycledLayoutsModel);
-        
         InitSystemSettingsWatcher(CycledLayoutsModel, out _systemSettingsChangesWatcher);
     }
-    
+
     private static void InitSettings(out SettingsInRegistry settings)
     {
         settings = new SettingsInRegistry(AppRegistryKey);

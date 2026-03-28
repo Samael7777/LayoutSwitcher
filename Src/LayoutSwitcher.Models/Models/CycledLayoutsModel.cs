@@ -1,8 +1,9 @@
-﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LayoutSwitcher.Control;
+using System.Collections.ObjectModel;
 
-namespace LayoutSwitcher.Models;
+
+namespace LayoutSwitcher.Models.Models;
 
 public partial class CycledLayoutsModel : ObservableObject
 {
@@ -18,8 +19,8 @@ public partial class CycledLayoutsModel : ObservableObject
             .ToArray();
 
     public CycledLayoutsModel(IEnumerable<KeyboardLayout> cycledLayouts)
-    {   
-        _lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+    {
+        _lock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
         _cycledLayouts = new ObservableCollection<KeyboardLayout>(cycledLayouts);
         _cycledLayouts.CollectionChanged += (_, _) => OnPropertyChanged(nameof(CycledLayouts));
     }
@@ -71,7 +72,7 @@ public partial class CycledLayoutsModel : ObservableObject
         {
             if (index == 0) return;
             
-            CycledLayouts.Move(index - 1, index);
+            CycledLayouts.Move(index, index - 1);
         }
         finally
         {
@@ -95,11 +96,22 @@ public partial class CycledLayoutsModel : ObservableObject
 
     public void CleanFromOrphanedLayouts()
     {
-        var systemLayouts = LayoutController.GetSystemLayouts();
-        var cleaned = CycledLayouts.Where(l => systemLayouts.Contains(l));
-        CycledLayouts = new ObservableCollection<KeyboardLayout>(cleaned);
+        _lock.EnterWriteLock();
+        try
+        {
+            var systemLayouts = LayoutController.GetSystemLayouts();
+            var orphaned = CycledLayouts.Where(l => !systemLayouts.Contains(l));
+            foreach (var layout in orphaned)
+            {
+                CycledLayouts.Remove(layout);
+            }
+        }
+        finally
+        {
+            _lock.ExitWriteLock();
+        }
     }
-
+    
     private KeyboardLayout GetNextLayout(KeyboardLayout current)
     {
         _lock.EnterReadLock();
