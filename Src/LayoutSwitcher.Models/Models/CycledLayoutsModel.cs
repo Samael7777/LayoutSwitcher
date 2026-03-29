@@ -100,7 +100,8 @@ public partial class CycledLayoutsModel : ObservableObject
         try
         {
             var systemLayouts = LayoutController.GetSystemLayouts();
-            var orphaned = CycledLayouts.Where(l => !systemLayouts.Contains(l));
+            var orphaned = CycledLayouts
+                .Where(l => !systemLayouts.Contains(l)).ToList();
             foreach (var layout in orphaned)
             {
                 CycledLayouts.Remove(layout);
