@@ -49,7 +49,8 @@ public abstract class AppRootBase<T> : IDisposable
         AppModel.SaveSettings();
         SettingsWindow?.Closed -= OnSettingsClosed;
         SettingsWindow = null;
-        _isSettingsShows = false;
+
+        Interlocked.Exchange(ref _isSettingsShows, false);
     }
 
     private static void InitCheckSingleAppInstance(out SingleInstance instance)
