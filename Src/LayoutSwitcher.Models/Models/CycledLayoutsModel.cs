@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LayoutSwitcher.Control;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
+
 // ReSharper disable ComplexConditionExpression
 
 
@@ -10,8 +12,9 @@ public partial class CycledLayoutsModel : ObservableObject
 {
     private readonly ReaderWriterLockSlim _lock;
 
+    private KeyboardLayout[]? _systemLayoutsCache;
+
     [ObservableProperty] 
-    [NotifyPropertyChangedFor(nameof(AvailableLayouts))]
     private ObservableCollection<KeyboardLayout> _cycledLayouts;
 
     public KeyboardLayout[] AvailableLayouts
@@ -20,10 +23,9 @@ public partial class CycledLayoutsModel : ObservableObject
         {
             _lock.EnterReadLock();
             try
-            {
-                // Return a copy to avoid external modifications while enumerating
-                return [.. LayoutController.GetSystemLayouts()
-                    .Where(l => !CycledLayouts.Contains(l))];
+            { 
+                return [.. _systemLayoutsCache?
+                    .Where(l => !CycledLayouts.Contains(l)) ?? []];
             }
             finally
             {
@@ -36,13 +38,22 @@ public partial class CycledLayoutsModel : ObservableObject
     {
         _lock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
         _cycledLayouts = new ObservableCollection<KeyboardLayout>(cycledLayouts);
-        _cycledLayouts.CollectionChanged += (_, _) => OnPropertyChanged(nameof(CycledLayouts));
+        _cycledLayouts.CollectionChanged += (_, _) =>
+        {
+            OnPropertyChanged(nameof(CycledLayouts));
+            OnPropertyChanged(nameof(AvailableLayouts));
+        };
+
+        RebuildSystemLayoutsCache();
     }
 
     public void SwitchToNextLayout()
     {
         var currentLayout = LayoutController.GetForegroundWindowLayout();
         var nextLayout = GetNextLayout(currentLayout);
+        if (currentLayout == nextLayout)
+            return;
+
         LayoutController.ChangeLayoutOnForegroundWindow(nextLayout);
     }
     
@@ -115,9 +126,10 @@ public partial class CycledLayoutsModel : ObservableObject
         _lock.EnterWriteLock();
         try
         {
-            var systemLayouts = LayoutController.GetSystemLayouts();
+            RebuildSystemLayoutsCache();
+            
             var orphaned = CycledLayouts
-                .Where(l => !systemLayouts.Contains(l)).ToList();
+                .Where(l => !_systemLayoutsCache.Contains(l)).ToList();
             foreach (var layout in orphaned)
             {
                 CycledLayouts.Remove(layout);
@@ -134,6 +146,9 @@ public partial class CycledLayoutsModel : ObservableObject
         _lock.EnterReadLock();
         try
         {
+            if (CycledLayouts.Count == 0)
+                return current;
+
             var nextIndex = 0;
             var currentIndex = CycledLayouts.IndexOf(current);
             
@@ -149,5 +164,11 @@ public partial class CycledLayoutsModel : ObservableObject
         {
             _lock.ExitReadLock();
         }
+    }
+
+    [MemberNotNull(nameof(_systemLayoutsCache))]
+    private void RebuildSystemLayoutsCache()
+    {
+        _systemLayoutsCache = LayoutController.GetSystemLayouts().ToArray();
     }
 }
