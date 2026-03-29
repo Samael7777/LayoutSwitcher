@@ -4,6 +4,7 @@ using Avalonia.Threading;
 using LayoutSwitcher.GUI.Avalonia.Models;
 using LayoutSwitcher.Models;
 using LayoutSwitcher.Models.Interfaces;
+using LayoutSwitcher.Models.Settings;
 
 
 namespace LayoutSwitcher.GUI.Avalonia;

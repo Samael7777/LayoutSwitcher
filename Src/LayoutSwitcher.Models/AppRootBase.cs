@@ -3,6 +3,7 @@ using LayoutSwitcher.Models.Models;
 using LayoutSwitcher.Models.Tools;
 using System.Diagnostics;
 using LayoutSwitcher.Models.ViewModels;
+using LayoutSwitcher.Models.Settings;
 
 namespace LayoutSwitcher.Models;
 

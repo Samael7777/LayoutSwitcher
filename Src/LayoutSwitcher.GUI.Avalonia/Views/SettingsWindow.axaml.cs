@@ -1,7 +1,7 @@
 using System;
 using Avalonia.Controls;
 using LayoutSwitcher.GUI.Avalonia.CustomControls;
-using LayoutSwitcher.Models;
+using LayoutSwitcher.Models.Settings;
 
 namespace LayoutSwitcher.GUI.Avalonia.Views;
 

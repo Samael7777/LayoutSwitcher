@@ -3,6 +3,7 @@ using System.Windows.Input;
 using LayoutSwitcher.Gui.WPF.Models;
 using LayoutSwitcher.Models;
 using LayoutSwitcher.Models.Interfaces;
+using LayoutSwitcher.Models.Settings;
 
 namespace LayoutSwitcher.Gui.WPF;
 

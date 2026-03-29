@@ -1,7 +1,7 @@
 ﻿using LayoutSwitcher.Control;
 using Microsoft.Win32;
 
-namespace LayoutSwitcher.Models;
+namespace LayoutSwitcher.Models.Settings;
 
 public class SettingsInRegistry(string appKey) : BaseSettings
 {
@@ -15,8 +15,8 @@ public class SettingsInRegistry(string appKey) : BaseSettings
         var appSubKey = Registry.CurrentUser.OpenSubKey(_appSubKey);
         if (appSubKey == null) return;
 
-        layoutToggleHotKeyIndex = appSubKey.GetValue(LayoutToggleHotKeyIndexValueName) as int?
-                                  ?? layoutToggleHotKeyIndex;
+        _layoutToggleHotKeyIndex = appSubKey.GetValue(LayoutToggleHotKeyIndexValueName) as int?
+                                  ?? _layoutToggleHotKeyIndex;
 
         var cycledLayoutData = appSubKey.GetValue(CycledLayoutValueName) as byte[] ?? [];
         _cycledLayout = BytesToUIntList(cycledLayoutData);
@@ -24,7 +24,7 @@ public class SettingsInRegistry(string appKey) : BaseSettings
 
     public override void Save()
     {
-        if (!isChanged) return;
+        if (!_isChanged) return;
 
         var cycledLayoutBinaryData = UIntArrayToBytes(_cycledLayout);
 
@@ -34,7 +34,7 @@ public class SettingsInRegistry(string appKey) : BaseSettings
         appSubKey.SetValue(LayoutToggleHotKeyIndexValueName, LayoutToggleHotKeyIndex, RegistryValueKind.DWord);
         appSubKey.SetValue(CycledLayoutValueName, cycledLayoutBinaryData, RegistryValueKind.Binary);
 
-        isChanged = false;
+        _isChanged = false;
     }
 
     private static byte[] UIntArrayToBytes(IEnumerable<KeyboardLayout> data)

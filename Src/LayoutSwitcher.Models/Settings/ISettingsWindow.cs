@@ -1,4 +1,4 @@
-﻿namespace LayoutSwitcher.Models;
+﻿namespace LayoutSwitcher.Models.Settings;
 
 public interface ISettingsWindow
 {

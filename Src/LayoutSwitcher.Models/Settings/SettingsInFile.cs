@@ -1,6 +1,6 @@
 ﻿using LayoutSwitcher.Control;
 
-namespace LayoutSwitcher.Models;
+namespace LayoutSwitcher.Models.Settings;
 
 public class SettingsInFile : BaseSettings
 {
@@ -14,7 +14,7 @@ public class SettingsInFile : BaseSettings
     
     public override void Save()
     {
-        if (!isChanged) return;
+        if (!_isChanged) return;
         
         using var file = File.Create(_settingsPath);
         using var writer = new BinaryWriter(file);
@@ -26,7 +26,7 @@ public class SettingsInFile : BaseSettings
             writer.Write(layout.Hkl);
         }
 
-        isChanged = false;
+        _isChanged = false;
     }
 
     public override void Load()

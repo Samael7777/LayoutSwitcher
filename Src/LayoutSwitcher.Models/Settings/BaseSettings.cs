@@ -1,13 +1,13 @@
 ﻿using LayoutSwitcher.Control;
 // ReSharper disable InconsistentNaming
 
-namespace LayoutSwitcher.Models;
+namespace LayoutSwitcher.Models.Settings;
 
 public abstract class BaseSettings
 {
     protected IEnumerable<KeyboardLayout> _cycledLayout = [];
-    protected int layoutToggleHotKeyIndex;
-    protected bool isChanged;
+    protected int _layoutToggleHotKeyIndex;
+    protected bool _isChanged;
 
     public IEnumerable<KeyboardLayout> CycledLayout
     {
@@ -17,19 +17,19 @@ public abstract class BaseSettings
             if (_cycledLayout.SequenceEqual(value)) return;
             
             _cycledLayout = value;
-            isChanged = true;
+            _isChanged = true;
         }
     }
 
     public int LayoutToggleHotKeyIndex
     {
-        get => layoutToggleHotKeyIndex;
+        get => _layoutToggleHotKeyIndex;
         set
         {
-            if (layoutToggleHotKeyIndex == value) return;
+            if (_layoutToggleHotKeyIndex == value) return;
 
-            layoutToggleHotKeyIndex = value;
-            isChanged = true;
+            _layoutToggleHotKeyIndex = value;
+            _isChanged = true;
         }
     }
 

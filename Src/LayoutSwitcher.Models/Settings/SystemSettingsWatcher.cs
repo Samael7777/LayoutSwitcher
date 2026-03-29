@@ -1,6 +1,6 @@
 ﻿using PhoenixTools.Watchers;
 
-namespace LayoutSwitcher.Models;
+namespace LayoutSwitcher.Models.Settings;
 
 // \HKEY_CURRENT_USER\Control Panel\Input Method\Hot Keys - hotkey to every layout
 

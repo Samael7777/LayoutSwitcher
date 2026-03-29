@@ -1,4 +1,5 @@
 ﻿using LayoutSwitcher.Models.Interfaces;
+using LayoutSwitcher.Models.Settings;
 
 namespace LayoutSwitcher.Models.Models;
 
