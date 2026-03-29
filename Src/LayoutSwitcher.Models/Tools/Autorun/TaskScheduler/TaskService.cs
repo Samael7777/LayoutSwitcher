@@ -10,7 +10,6 @@ namespace LayoutSwitcher.Models.Tools.Autorun.TaskScheduler;
 internal unsafe  class TaskService : IDisposable
 {
     private readonly Guid _taskSchedulerClsId = new("0F87369F-A4E5-4CFC-BD3E-73E6154572DD");
-
     private readonly ITaskService* _taskService;
 
     public TaskService()
@@ -33,26 +32,10 @@ internal unsafe  class TaskService : IDisposable
             tasks->get_Item(VARIANT.FromInt(i), &item);
 
             list.Add(item->Name.ToString());
+            item->Release();
         }
-
-        return list;
-    }
-
-    public List<string> GetFolders(string baseFolderPath)
-    {
-        var list = new List<string>();
-        var folder = GetTaskSchedulerFolder(baseFolderPath);
-
-        ITaskFolderCollection* folders;
-        folder->GetFolders(0, &folders);
-
-        for (var i = 1; i <= folders->Count; i++)
-        {
-            ITaskFolder* item;
-            folders->get_Item(VARIANT.FromInt(i), &item);
-
-            list.Add(item->Name.ToString());
-        }
+        tasks->Release();
+        folder->Release();
 
         return list;
     }
@@ -71,6 +54,7 @@ internal unsafe  class TaskService : IDisposable
         newTask->SetDefaultSettings();
 
         folder->RegisterTaskDefinition(newTask, name);
+        folder->Release();
     }
 
     public void DeleteTask(string taskSchedulerFolderPath, string name)
@@ -80,6 +64,8 @@ internal unsafe  class TaskService : IDisposable
         {
             folder->DeleteTask((BSTR)namePtr, 0);
         }
+
+        folder->Release();
     }
 
     private void ConnectToTaskScheduler(out ITaskService* taskService)
@@ -90,10 +76,13 @@ internal unsafe  class TaskService : IDisposable
             .ThrowOnFailure();
 
         taskService = (ITaskService*)pUnk;
-        _taskService->Connect(VARIANT.Null, VARIANT.Null, VARIANT.Null, VARIANT.Null);
+        taskService->Connect(VARIANT.Null, VARIANT.Null, VARIANT.Null, VARIANT.Null);
 
-        if (_taskService->Connected.Value == 0)
-            throw new COMException("Task Scheduler Service connection error.");
+        if (taskService->Connected.Value != 0) 
+            return;
+
+        taskService->Release();
+        throw new COMException("Task Scheduler Service connection error.");
     }
 
     private ITaskFolder* GetTaskSchedulerFolder(string path)
@@ -128,7 +117,7 @@ internal unsafe  class TaskService : IDisposable
         if (disposing)
         {
             //dispose managed state (managed objects)
-            
+            _taskService->Release();
         }
         //free unmanaged resources (unmanaged objects) and override finalizer
         //set large fields to null
