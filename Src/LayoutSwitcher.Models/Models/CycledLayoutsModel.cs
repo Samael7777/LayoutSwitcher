@@ -13,10 +13,22 @@ public partial class CycledLayoutsModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(AvailableLayouts))]
     private ObservableCollection<KeyboardLayout> _cycledLayouts;
 
-    public KeyboardLayout[] AvailableLayouts =>
-        LayoutController.GetSystemLayouts()
-            .Where(l => !CycledLayouts.Contains(l))
-            .ToArray();
+    public KeyboardLayout[] AvailableLayouts
+    {
+        get
+        {
+            _lock.EnterReadLock();
+            try
+            {
+                // Return a copy to avoid external modifications while enumerating
+                return [.. LayoutController.GetSystemLayouts().Where(l => !CycledLayouts.Contains(l))];
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
+        }
+    }
 
     public CycledLayoutsModel(IEnumerable<KeyboardLayout> cycledLayouts)
     {
