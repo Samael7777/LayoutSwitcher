@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LayoutSwitcher.Control;
 using System.Collections.ObjectModel;
+// ReSharper disable ComplexConditionExpression
 
 
 namespace LayoutSwitcher.Models.Models;
@@ -21,7 +22,8 @@ public partial class CycledLayoutsModel : ObservableObject
             try
             {
                 // Return a copy to avoid external modifications while enumerating
-                return [.. LayoutController.GetSystemLayouts().Where(l => !CycledLayouts.Contains(l))];
+                return [.. LayoutController.GetSystemLayouts()
+                    .Where(l => !CycledLayouts.Contains(l))];
             }
             finally
             {
@@ -46,14 +48,16 @@ public partial class CycledLayoutsModel : ObservableObject
     
     public void AddToCyclingFromAvailableIndex(int index)
     {
-        if (index < 0 || index >= AvailableLayouts.Length)
+        var available = AvailableLayouts;
+        if (index < 0 || index >= available.Length)
             return;
 
         _lock.EnterWriteLock();
         try
         {
-            var layout = AvailableLayouts[index];
-            CycledLayouts.Add(layout);
+            var layout = available[index];
+            if (!CycledLayouts.Contains(layout))
+                CycledLayouts.Add(layout);
         }
         finally
         {
