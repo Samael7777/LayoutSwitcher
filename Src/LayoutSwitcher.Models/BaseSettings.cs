@@ -5,18 +5,18 @@ namespace LayoutSwitcher.Models;
 
 public abstract class BaseSettings
 {
-    protected IEnumerable<KeyboardLayout> cycledLayout = [];
+    protected IEnumerable<KeyboardLayout> _cycledLayout = [];
     protected int layoutToggleHotKeyIndex;
     protected bool isChanged;
 
     public IEnumerable<KeyboardLayout> CycledLayout
     {
-        get => cycledLayout;
+        get => _cycledLayout;
         set
         {
-            if (cycledLayout.SequenceEqual(value)) return;
+            if (_cycledLayout.SequenceEqual(value)) return;
             
-            cycledLayout = value;
+            _cycledLayout = value;
             isChanged = true;
         }
     }

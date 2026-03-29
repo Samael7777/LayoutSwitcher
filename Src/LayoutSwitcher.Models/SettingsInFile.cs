@@ -48,7 +48,7 @@ public class SettingsInFile : BaseSettings
             }
 
             LayoutToggleHotKeyIndex = hotKeyIndex;
-            cycledLayout = layoutsList;
+            _cycledLayout = layoutsList;
         }
         catch
         {

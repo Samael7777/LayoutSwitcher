@@ -9,9 +9,7 @@ namespace LayoutSwitcher.GUI.Avalonia;
 
 public class App : Application
 {
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-    private AvaloniaAppRoot<SettingsWindow> _avaloniaAppRoot;
-#pragma warning restore CS8618 
+    private AvaloniaAppRoot<SettingsWindow>? _avaloniaAppRoot;
 
     public override void Initialize()
     {
@@ -38,7 +36,7 @@ public class App : Application
 
     private void OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
     {
-        _avaloniaAppRoot.Dispose();
+        _avaloniaAppRoot?.Dispose();
     }
 
     //private static void DisableAvaloniaDataAnnotationValidation()

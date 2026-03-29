@@ -19,14 +19,14 @@ public class SettingsInRegistry(string appKey) : BaseSettings
                                   ?? layoutToggleHotKeyIndex;
 
         var cycledLayoutData = appSubKey.GetValue(CycledLayoutValueName) as byte[] ?? [];
-        cycledLayout = BytesToUIntList(cycledLayoutData);
+        _cycledLayout = BytesToUIntList(cycledLayoutData);
     }
 
     public override void Save()
     {
         if (!isChanged) return;
 
-        var cycledLayoutBinaryData = UIntArrayToBytes(cycledLayout);
+        var cycledLayoutBinaryData = UIntArrayToBytes(_cycledLayout);
 
         var appSubKey = Registry.CurrentUser.OpenSubKey(_appSubKey, true) 
                         ?? Registry.CurrentUser.CreateSubKey(_appSubKey);
