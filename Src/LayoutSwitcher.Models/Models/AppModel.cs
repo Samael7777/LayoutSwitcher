@@ -1,16 +1,13 @@
-﻿using System.Collections.Concurrent;
-using LayoutSwitcher.Models.Interfaces;
+﻿using LayoutSwitcher.Models.Interfaces;
 
 namespace LayoutSwitcher.Models.Models;
 
 public class AppModel : IDisposable
 {
-   
+    public const string AppId = "LayoutSwitcher";
+    
     private const string AppRegistryKey = @"Vadim Kutin\Layout Switcher";
 
-    public const string AppId = "LayoutSwitcher";
-
-    
     private readonly SystemSettingsWatcher _systemSettingsChangesWatcher;
     private readonly SettingsInRegistry _settings;
     
