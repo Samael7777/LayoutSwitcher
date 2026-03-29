@@ -10,6 +10,9 @@ public static unsafe class LayoutController
 {
     public static void ChangeLayoutOnForegroundWindow(KeyboardLayout target)
     {
+        if (target.IsEmpty)
+            return;
+
         var hkl = LoadLayout(target.KLID);
         ActivateLayout(hkl);
         
