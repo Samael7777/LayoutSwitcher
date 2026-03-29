@@ -2,7 +2,7 @@
 
 namespace LayoutSwitcher.Models.Tools;
 
-public class SingleInstance(string appId, int checkTimeoutMs = 500) : IDisposable
+public class SingleInstance(string appId, int checkTimeoutMs = 0) : IDisposable
 {
     private readonly Mutex _appMutex = new(true, appId + "_mutex");
 
