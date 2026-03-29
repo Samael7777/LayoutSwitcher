@@ -25,6 +25,8 @@ public class SettingsInFile : BaseSettings
         {
             writer.Write(layout.Hkl);
         }
+
+        isChanged = false;
     }
 
     public override void Load()

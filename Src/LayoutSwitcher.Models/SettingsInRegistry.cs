@@ -33,6 +33,8 @@ public class SettingsInRegistry(string appKey) : BaseSettings
 
         appSubKey.SetValue(LayoutToggleHotKeyIndexValueName, LayoutToggleHotKeyIndex, RegistryValueKind.DWord);
         appSubKey.SetValue(CycledLayoutValueName, cycledLayoutBinaryData, RegistryValueKind.Binary);
+
+        isChanged = false;
     }
 
     private static byte[] UIntArrayToBytes(IEnumerable<KeyboardLayout> data)

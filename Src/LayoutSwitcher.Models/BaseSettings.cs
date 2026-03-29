@@ -5,7 +5,7 @@ namespace LayoutSwitcher.Models;
 
 public abstract class BaseSettings
 {
-    protected IEnumerable<KeyboardLayout> cycledLayout = Array.Empty<KeyboardLayout>();
+    protected IEnumerable<KeyboardLayout> cycledLayout = [];
     protected int layoutToggleHotKeyIndex;
     protected bool isChanged;
 
