@@ -76,12 +76,6 @@ public partial class SettingsVm : ObservableObject
     {
         _cycledLayoutsModel.MoveCyclingLayoutDown(index);
     }
-
-    [RelayCommand]
-    private void FormClosing()
-    {
-        //todo ???
-    }
     
     #endregion
 
