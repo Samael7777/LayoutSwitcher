@@ -21,11 +21,4 @@ public partial class SettingsWindow : ISettingsWindow
         MinHeight = Height;
         MinWidth = Width;
     }
-
-    protected override void OnClosing(CancelEventArgs e)
-    {
-        e.Cancel = true;
-        Hide();
-        base.OnClosing(e);
-    }
 }
