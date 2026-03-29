@@ -11,7 +11,8 @@ public partial class SettingsVm : ObservableObject
 {
     private readonly AutorunModel _autorunModel;
     private readonly IHotKeyModel _hotkeyModel;
-    private readonly Models.CycledLayoutsModel _cycledLayoutsModel;
+    private readonly CycledLayoutsModel _cycledLayoutsModel;
+    private readonly Action<Action>? _uiThreadInvokeAction;
 
     [ObservableProperty] private int _appHotkeyIndex;
     [ObservableProperty] private IReadOnlyList<string> _availableLayouts = [];
@@ -27,12 +28,12 @@ public partial class SettingsVm : ObservableObject
 
     public bool AutorunControlEnabled => AccountHelper.IsAdministrator();
     
-    public SettingsVm(AppModel appModel)
+    public SettingsVm(AppModel appModel, Action<Action>? uiThreadInvokeAction)
     {
         _autorunModel = appModel.AutorunModel;
         _cycledLayoutsModel = appModel.CycledLayoutsModel;
         _hotkeyModel = appModel.HotKeyModel;
-        
+        _uiThreadInvokeAction = uiThreadInvokeAction;
         AppHotkeyIndex =_hotkeyModel.HotKeyIndex;
         _cycledLayoutsModel.CycledLayouts.CollectionChanged += 
             (_, _) => UpdateLayoutsLists();
@@ -86,10 +87,21 @@ public partial class SettingsVm : ObservableObject
 
     private void UpdateLayoutsLists()
     {
+        if (_uiThreadInvokeAction == null)
+        {
+            UpdateLayoutsListsInner();
+            return;
+        }
+        _uiThreadInvokeAction.Invoke(UpdateLayoutsListsInner);
+    }
+
+    private void UpdateLayoutsListsInner()
+    {
         AvailableLayouts = _cycledLayoutsModel.AvailableLayouts
             .Select(l => l.LayoutDisplayName).ToImmutableList();
-        
+
         CycledLayouts = _cycledLayoutsModel.CycledLayouts
             .Select(l => l.LayoutDisplayName).ToImmutableList();
+
     }
 }

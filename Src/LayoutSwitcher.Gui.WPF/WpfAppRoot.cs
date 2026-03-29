@@ -6,7 +6,7 @@ using LayoutSwitcher.Models.Interfaces;
 
 namespace LayoutSwitcher.Gui.WPF;
 
-public class AppRoot<T> : AppRootBase<T>
+public class WpfAppRoot<T>() : AppRootBase<T>(Application.Current.Dispatcher.Invoke)
     where T : ISettingsWindow, new()
 {
     protected override void InitHotKeys(out IHotKeyModel hotKeyModel)

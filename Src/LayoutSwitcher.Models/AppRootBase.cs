@@ -12,14 +12,16 @@ public abstract class AppRootBase<T> : IDisposable
     protected readonly SingleInstance SingleInstance;
     protected readonly AppModel AppModel;
     protected ISettingsWindow? SettingsWindow;
+    protected readonly Action<Action>? UiThreadInvokeAction;
 
     private bool _isSettingsShows;
 
-    protected AppRootBase()
+    protected AppRootBase(Action<Action>? uiThreadInvokeAction)
     {
         InitCheckSingleAppInstance(out SingleInstance);
         InitHotKeysBase(out var hotKeyModel);
         InitAppModel(hotKeyModel, out AppModel);
+        UiThreadInvokeAction = uiThreadInvokeAction;
     }
 
     public void ShowSettingsWindow()
@@ -29,7 +31,7 @@ public abstract class AppRootBase<T> : IDisposable
 
         SettingsWindow = new T
         {
-            DataContext = new SettingsVm(AppModel),
+            DataContext = new SettingsVm(AppModel, UiThreadInvokeAction),
         };
         SettingsWindow.Show();
         SettingsWindow.Closed += OnSettingsClosed;

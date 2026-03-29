@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Avalonia.Input;
+using Avalonia.Threading;
 using LayoutSwitcher.GUI.Avalonia.Models;
 using LayoutSwitcher.Models;
 using LayoutSwitcher.Models.Interfaces;
@@ -7,9 +8,9 @@ using LayoutSwitcher.Models.Interfaces;
 
 namespace LayoutSwitcher.GUI.Avalonia;
 
-public class AppRoot<T> : AppRootBase<T>
+public class AvaloniaAppRoot<T>() : AppRootBase<T>(Dispatcher.UIThread.Invoke)
     where T : ISettingsWindow, new()
-{ 
+{
     protected override void InitHotKeys(out IHotKeyModel hotKeyModel)
     {
         var availableCombinations = new List<KeyGesture>

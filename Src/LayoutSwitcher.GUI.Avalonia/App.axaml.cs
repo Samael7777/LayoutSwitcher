@@ -1,7 +1,7 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Avalonia.Controls;
 using LayoutSwitcher.GUI.Avalonia.Views;
 using LayoutSwitcher.Models.ViewModels;
 
@@ -10,7 +10,7 @@ namespace LayoutSwitcher.GUI.Avalonia;
 public class App : Application
 {
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-    private AppRoot<SettingsWindow> _appRoot;
+    private AvaloniaAppRoot<SettingsWindow> _avaloniaAppRoot;
 #pragma warning restore CS8618 
 
     public override void Initialize()
@@ -27,10 +27,10 @@ public class App : Application
             //DisableAvaloniaDataAnnotationValidation();
             desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             desktop.Exit += OnExit;
-
-            _appRoot = new AppRoot<SettingsWindow>();
             
-            DataContext = new TrayViewModel(_appRoot.ShowSettingsWindow, () => desktop.Shutdown());
+            _avaloniaAppRoot = new AvaloniaAppRoot<SettingsWindow>();
+            
+            DataContext = new TrayViewModel(_avaloniaAppRoot.ShowSettingsWindow, () => desktop.Shutdown());
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -38,7 +38,7 @@ public class App : Application
 
     private void OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
     {
-        _appRoot.Dispose();
+        _avaloniaAppRoot.Dispose();
     }
 
     //private static void DisableAvaloniaDataAnnotationValidation()
