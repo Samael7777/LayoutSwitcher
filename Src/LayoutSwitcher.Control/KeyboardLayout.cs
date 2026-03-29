@@ -1,44 +1,44 @@
-﻿using System.Diagnostics;
+﻿using LayoutSwitcher.Control.Json;
+using LayoutSwitcher.Control.Tools;
+using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json.Serialization;
-using LayoutSwitcher.Control.Tools;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable IdentifierTypo
 
 namespace LayoutSwitcher.Control;
 
-public enum LayoutType
-{
-    Unknown,
-    Standart,
-    MSKLC,
-    TSF,
-    IME
-}
-
+[JsonConverter(typeof(KeyboardLayoutJsonConverter))]
 [DebuggerDisplay("{Hkl} ({LanguageDisplayName})")]
 public class KeyboardLayout : IEquatable<KeyboardLayout>
 {
-    private static readonly Dictionary<uint, KeyboardLayout> Cache = new();
+    public static KeyboardLayout Empty { get; } = new();
+    public bool IsEmpty => Hkl == 0;
 
-    [JsonConstructor]
+    private KeyboardLayout()
+    {
+        Hkl = 0;
+        LanguageId = 0;
+        KeyboardId = 0;
+        LanguageDisplayName = string.Empty;
+        LayoutDisplayName = string.Empty;
+        LayoutText = string.Empty;
+    }
+
     private KeyboardLayout(uint hkl)
     {
         Hkl = hkl;
         LanguageId = (ushort)(hkl & 0xFFFF);
         var layoutId = (ushort)(hkl >> 16);
         KeyboardId = layoutId;
-        Type = GetType(hkl);
         LanguageDisplayName = CultureInfo.GetCultureInfo(LanguageId).DisplayName;
         var descriptor = LayoutIdentifier.GetKeyboardLayout(layoutId);
         KLID = (uint)descriptor.KLID;
         LayoutDisplayName = descriptor.LayoutDisplayName;
         LayoutText = descriptor.LayoutText;
     }
-
-    [JsonIgnore] public LayoutType Type { get; }
-
+    
     /// <summary>
     /// Input locale identifier.
     /// </summary>
@@ -73,36 +73,14 @@ public class KeyboardLayout : IEquatable<KeyboardLayout>
     /// Keyboard layout text from system registry.
     /// </summary>
     [JsonIgnore] public string LayoutText { get; }
-
-    [JsonIgnore] public bool IsImeLayout => (KeyboardId & 0xF000) > 0;
-
+    
     public override string ToString() => Hkl.ToString("X8");
 
     public static KeyboardLayout GetLayout(uint hkl)
     {
-        ArgumentOutOfRangeException.ThrowIfZero(hkl);
-
-        if(Cache.TryGetValue(hkl, out var layout))
-            return layout;
-
-        layout = new KeyboardLayout(hkl);
-        Cache.Add(hkl, layout);
-        
-        return layout;
+        return hkl == 0 ? Empty : new KeyboardLayout(hkl);
     }
-
-    private static LayoutType GetType(uint hkl)
-    {
-        return (hkl & 0xF0000000) switch
-        {
-            0x0 => LayoutType.Standart,
-            0xA => LayoutType.MSKLC,
-            0xD => LayoutType.TSF,
-            0xF => LayoutType.IME,
-            _ => LayoutType.Unknown
-        };
-    }
-
+    
     #region IEquatable
     public bool Equals(KeyboardLayout? other)
     {
