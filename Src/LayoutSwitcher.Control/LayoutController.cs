@@ -78,6 +78,6 @@ public static unsafe class LayoutController
     private static void SendChangeLayoutMessage(HWND window, HKL hkl)
     {
         WinApi.PostMessage(window, WinApi.WM_INPUTLANGCHANGEREQUEST, 0, (nint)hkl);
-        Task.Delay(10).Wait();
+        Thread.Sleep(10);
     }
 }
